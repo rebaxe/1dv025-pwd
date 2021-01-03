@@ -16,7 +16,8 @@
   },
   "contributors": [
     "Johan Leitet <johan.leitet@lnu.se>",
-    "Mats Loock <mats.loock@lnu.se>"
+    "Mats Loock <mats.loock@lnu.se>", 
+    "Rebecca Axelsson <ra223ai@student.lnu.se>"
   ],
   "license": "MIT",
   "private": true,
