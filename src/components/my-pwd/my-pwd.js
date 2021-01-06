@@ -88,6 +88,9 @@ customElements.define('my-pwd',
      */
     connectedCallback () {
       this.pwd.addEventListener('close', this._closeWindow)
+      this.pwd.addEventListener('front', (event) => {
+        event.target.parentNode.appendChild(event.target)
+      })
     }
 
     /**

@@ -96,6 +96,7 @@ customElements.define('my-window',
 
       this._onMouseDown = this._onMouseDown.bind(this)
       this.closeWindow = this.closeWindow.bind(this)
+      this.frontWindow = this.frontWindow.bind(this)
     }
 
     /**
@@ -125,6 +126,8 @@ customElements.define('my-window',
       if (event.target === this.closeBtn) {
         this.closeWindow()
       }
+      this.frontWindow()
+
       const window = this.windowEl
       window.classList.add('mouse-down')
 
@@ -173,6 +176,12 @@ customElements.define('my-window',
      */
     closeWindow () {
       this.dispatchEvent(new CustomEvent('close', {
+        bubbles: true
+      }))
+    }
+
+    frontWindow () {
+      this.dispatchEvent(new CustomEvent('front', {
         bubbles: true
       }))
     }
