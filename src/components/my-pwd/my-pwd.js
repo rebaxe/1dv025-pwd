@@ -5,6 +5,8 @@
  * @version 1.0.0
  */
 
+const BG_URL = (new URL('./images/sky-wallpaper.jpg', import.meta.url)).href
+
 /**
  * Define template.
  */
@@ -14,7 +16,9 @@ template.innerHTML = `
     .pwd-container {
       height: 100vh;
       width: 100vw;
-      background-image: url('./images/sky-wallpaper.jpg');
+      background: url(${BG_URL});
+      background-size: cover;
+      /*background: linear-gradient(to right, #355c7d, #6c5b7b, #c06c84);*/
     }
     .dock {
         background-color: rgb(75, 74, 74);
