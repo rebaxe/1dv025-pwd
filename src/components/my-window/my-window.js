@@ -47,6 +47,7 @@ template.innerHTML = `
       }
       #close-btn:hover {
           background-color: #A8534B;
+          cursor: pointer;
       }
 
       #close-btn:focus {
@@ -103,7 +104,7 @@ customElements.define('my-window',
     connectedCallback () {
       this.windowEl.addEventListener('dragstart', this._onDragStart)
       this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
-      this.windowTopBar.addEventListener('click', this.closeWindow)
+      this.closeBtn.addEventListener('click', this.closeWindow)
     }
 
     /**
@@ -112,7 +113,7 @@ customElements.define('my-window',
     disconnectedCallback () {
       this.windowEl.removeEventListener('dragstart', this._onDragStart)
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
-      this.windowTopBar.removeEventListener('click', this.closeWindow)
+      this.closeBtn.removeEventListener('click', this.closeWindow)
     }
 
     /**
@@ -121,6 +122,9 @@ customElements.define('my-window',
      * @param {MouseEvent} event The mouse event.
      */
     _onMouseDown (event) {
+      if (event.target === this.closeBtn) {
+        this.closeWindow()
+      }
       const window = this.windowEl
       window.classList.add('mouse-down')
 
@@ -168,7 +172,6 @@ customElements.define('my-window',
      * Called when the user clicks the close button.
      */
     closeWindow () {
-      console.log('Close')
       this.dispatchEvent(new CustomEvent('close', {
         bubbles: true
       }))

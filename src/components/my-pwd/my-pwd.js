@@ -51,8 +51,8 @@ template.innerHTML = `
     }
   </style>
   <div class="pwd-container">
-      <my-window></my-window>
-      <my-window></my-window>
+      <my-window><h1>A</h1></my-window>
+      <my-window><h1>B</h1></my-window>
       <div class="dock">
           <input type="image" id="memory" src="${MEMORY_ICON_URL}">
           <input type="image" id="message" src="${MESSAGE_ICON_URL}">
