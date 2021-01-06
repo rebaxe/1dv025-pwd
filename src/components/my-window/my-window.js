@@ -31,6 +31,9 @@ template.innerHTML = `
           display: flex;
           align-items: center;
       }
+      .top-bar:hover {
+        cursor: move;
+      }
       #close-btn {
           width: 8px;
           height: 8px;
@@ -47,6 +50,10 @@ template.innerHTML = `
       #close-btn:focus {
           outline: none;
           background-color: #A8534B;
+      }
+      .mouse-down {
+        position: absolute; 
+        z-index: 1000;
       }
   </style>
   <div class="window-container">
@@ -73,5 +80,79 @@ customElements.define('my-window',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
+
+      this.windowEl = this.shadowRoot.querySelector('.window-container')
+      this.windowTopBar = this.shadowRoot.querySelector('.top-bar')
+
+      this._onMouseDown = this._onMouseDown.bind(this)
+      // this._onMouseMove = this._onMouseMove.bind(this)
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this.windowEl.addEventListener('dragstart', this._onDragStart)
+      this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
+    }
+
+    /**
+     * Called after the element is removed from the DOM.
+     */
+    disconnectedCallback () {
+      this.windowEl.removeEventListener('dragstart', this._onDragStart)
+      this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
+    }
+
+    /**
+     * Called when when mouse is pressed down on the window.
+     *
+     * @param {MouseEvent} event The mouse event.
+     */
+    _onMouseDown (event) {
+      const window = this.windowEl
+      window.classList.add('mouse-down')
+
+      const distanceToPointerX = event.clientX - event.target.getBoundingClientRect().left
+      const distanceToPointerY = event.clientY - event.target.getBoundingClientRect().top
+
+      _moveWindow(window, event)
+      // window.style.left = event.pageX - distanceToPointerX + 'px'
+      // window.style.top = event.pageY - distanceToPointerY + 'px'
+      console.log('Mouse down')
+
+      /**
+       * Called when the mouse is moved.
+       *
+       * @param {Element} window The window element.
+       * @param {MouseEvent} event The mouse event.
+       */
+      function _moveWindow (window, event) {
+        window.style.left = event.pageX - distanceToPointerX + 'px'
+        window.style.top = event.pageY - distanceToPointerY + 'px'
+      }
+
+      /**
+       * Moves the window.
+       *
+       * @param {MouseEvent} event The mouse event.
+       */
+      function _onMouseMove (event) {
+        _moveWindow(window, event)
+      }
+
+      document.addEventListener('mousemove', _onMouseMove)
+      document.addEventListener('mouseup', () => {
+        document.removeEventListener('mousemove', _onMouseMove)
+      })
+    }
+
+    /**
+     * Called when a dragstart event is fired.
+     *
+     * @param {DragEvent} event A dragstart event.
+     */
+    _onDragStart (event) {
+      event.preventDefault()
     }
   })
