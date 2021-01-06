@@ -6,6 +6,8 @@
  */
 
 const BG_URL = (new URL('./images/sky-wallpaper.jpg', import.meta.url)).href
+const MEMORY_ICON_URL = (new URL('./images/memory-game-icon.png', import.meta.url)).href
+const MESSAGE_ICON_URL = (new URL('./images/message-icon.png', import.meta.url)).href
 
 /**
  * Define template.
@@ -21,7 +23,7 @@ template.innerHTML = `
       /*background: linear-gradient(to right, #355c7d, #6c5b7b, #c06c84);*/
     }
     .dock {
-        background-color: rgb(75, 74, 74);
+        background-color: rgba(75, 74, 74, 0.75);
         border: 1px solid grey;
         border-radius: 10px 10px 0px 0px;
         width: 60vw;
@@ -30,10 +32,31 @@ template.innerHTML = `
         bottom: 0;
         left: 50%;
         transform: translate(-50%, 0);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
+    input[type="image"] {
+      height: 80%;
+      transition: 0.5s ease-in-out;
+      padding: 5px 10px;
+    }
+
+    input[type="image"]:hover {
+      transform: scale(1.25, 1.25);
+    }
+
+    input[type="image"]:focus {
+      outline: none;
+      transform: scale(1.25, 1.25);
+    }
+
   </style>
   <div class="pwd-container">
       <div class="dock">
+        <input type="image" id="memory" src="${MEMORY_ICON_URL}">
+        <input type="image" id="message" src="${MESSAGE_ICON_URL}">
       </div>
   </div>
   `
