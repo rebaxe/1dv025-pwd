@@ -83,14 +83,25 @@ customElements.define('my-pwd',
       this._closeWindow = this._closeWindow.bind(this)
     }
 
+    /**
+     * Called after the element is inserted into the DOM.
+     */
     connectedCallback () {
       this.pwd.addEventListener('close', this._closeWindow)
     }
 
+    /**
+     * Called after the element is removed the DOM.
+     */
     disconnectedCallback () {
       this.pwd.removeEventListener('close', this._closeWindow)
     }
 
+    /**
+     * Removes a window element.
+     *
+     * @param {event} event An event.
+     */
     _closeWindow (event) {
       this.pwd.removeChild(event.target)
     }
