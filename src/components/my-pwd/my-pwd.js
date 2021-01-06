@@ -22,30 +22,29 @@ template.innerHTML = `
       background-size: cover;
     }
     .dock {
-        background-color: rgba(75, 74, 74, 0.75);
-        border: 1px solid grey;
-        border-radius: 10px 10px 0px 0px;
-        width: 60vw;
-        height: 10vh;
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translate(-50%, 0);
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+      background-color: rgba(75, 74, 74, 0.75);
+      border: 1px solid grey;
+      border-radius: 10px 10px 0px 0px;
+      width: 60vw;
+      height: 10vh;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
     }
     input[type="image"] {
       height: 80%;
       transition: 0.5s ease-in-out;
       padding: 5px 10px;
+      position: relative;
     }
-
     input[type="image"]:hover {
       transform: scale(1.25, 1.25);
     }
-
     input[type="image"]:focus {
       outline: none;
       transform: scale(1.25, 1.25);
@@ -53,9 +52,10 @@ template.innerHTML = `
   </style>
   <div class="pwd-container">
       <my-window></my-window>
+      <my-window></my-window>
       <div class="dock">
-        <input type="image" id="memory" src="${MEMORY_ICON_URL}">
-        <input type="image" id="message" src="${MESSAGE_ICON_URL}">
+          <input type="image" id="memory" src="${MEMORY_ICON_URL}">
+          <input type="image" id="message" src="${MESSAGE_ICON_URL}">
       </div>
   </div>
   `
@@ -77,5 +77,21 @@ customElements.define('my-pwd',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
+
+      this.pwd = this.shadowRoot.querySelector('.pwd-container')
+
+      this._closeWindow = this._closeWindow.bind(this)
+    }
+
+    connectedCallback () {
+      this.pwd.addEventListener('close', this._closeWindow)
+    }
+
+    disconnectedCallback () {
+      this.pwd.removeEventListener('close', this._closeWindow)
+    }
+
+    _closeWindow (event) {
+      this.pwd.removeChild(event.target)
     }
   })

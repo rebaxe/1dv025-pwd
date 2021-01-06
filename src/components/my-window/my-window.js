@@ -40,6 +40,8 @@ template.innerHTML = `
           border-radius: 50%;
           border: none;
           margin: 3px 5px;
+          background: no-repeat center url(${CLOSE_SYMBOL_URL});
+          background-size: 8px;
           background-color: #26695D;
           padding: 3px;
       }
@@ -55,11 +57,17 @@ template.innerHTML = `
         position: absolute; 
         z-index: 1000;
       }
+
+      slot {
+        width: 100%;
+        height: calc(100% - 24px);
+      }
   </style>
   <div class="window-container">
     <div class="top-bar">
-        <input type="image" id="close-btn" src="${CLOSE_SYMBOL_URL}">
+      <div id="close-btn"></div>
     </div>
+    <slot></slot>
   </div>
   `
 /**
@@ -83,9 +91,10 @@ customElements.define('my-window',
 
       this.windowEl = this.shadowRoot.querySelector('.window-container')
       this.windowTopBar = this.shadowRoot.querySelector('.top-bar')
+      this.closeBtn = this.shadowRoot.querySelector('#close-btn')
 
       this._onMouseDown = this._onMouseDown.bind(this)
-      // this._onMouseMove = this._onMouseMove.bind(this)
+      this.closeWindow = this.closeWindow.bind(this)
     }
 
     /**
@@ -94,6 +103,7 @@ customElements.define('my-window',
     connectedCallback () {
       this.windowEl.addEventListener('dragstart', this._onDragStart)
       this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
+      this.windowTopBar.addEventListener('click', this.closeWindow)
     }
 
     /**
@@ -102,6 +112,7 @@ customElements.define('my-window',
     disconnectedCallback () {
       this.windowEl.removeEventListener('dragstart', this._onDragStart)
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
+      this.windowTopBar.removeEventListener('click', this.closeWindow)
     }
 
     /**
@@ -117,9 +128,6 @@ customElements.define('my-window',
       const distanceToPointerY = event.clientY - event.target.getBoundingClientRect().top
 
       _moveWindow(window, event)
-      // window.style.left = event.pageX - distanceToPointerX + 'px'
-      // window.style.top = event.pageY - distanceToPointerY + 'px'
-      console.log('Mouse down')
 
       /**
        * Called when the mouse is moved.
@@ -154,5 +162,15 @@ customElements.define('my-window',
      */
     _onDragStart (event) {
       event.preventDefault()
+    }
+
+    /**
+     * Called when the user clicks the close button.
+     */
+    closeWindow () {
+      console.log('Close')
+      this.dispatchEvent(new CustomEvent('close', {
+        bubbles: true
+      }))
     }
   })
