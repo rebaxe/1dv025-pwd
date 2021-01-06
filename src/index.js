@@ -6,3 +6,5 @@
  */
 
 import './components/my-pwd'
+import './components/my-window'
+import './components/my-message-app'

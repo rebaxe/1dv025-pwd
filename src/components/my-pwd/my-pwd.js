@@ -20,7 +20,6 @@ template.innerHTML = `
       width: 100vw;
       background: url(${BG_URL});
       background-size: cover;
-      /*background: linear-gradient(to right, #355c7d, #6c5b7b, #c06c84);*/
     }
     .dock {
         background-color: rgba(75, 74, 74, 0.75);
@@ -51,9 +50,9 @@ template.innerHTML = `
       outline: none;
       transform: scale(1.25, 1.25);
     }
-
   </style>
   <div class="pwd-container">
+      <my-window></my-window>
       <div class="dock">
         <input type="image" id="memory" src="${MEMORY_ICON_URL}">
         <input type="image" id="message" src="${MESSAGE_ICON_URL}">
