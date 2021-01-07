@@ -14,12 +14,13 @@ const template = document.createElement('template')
 template.innerHTML = `
   <style>
       .window-container {
-        height: 50%;
+        height: 70%;
         width: 50%;
         background-color: white;
         border-radius: 5px;
         border: 1px solid grey;
         position:relative;
+        box-shadow: 0 0 10px #333;
       }
       .top-bar {
           position: absolute;
@@ -76,7 +77,7 @@ template.innerHTML = `
  */
 customElements.define('my-window',
   /**
-   * Represents a PWD.
+   * Represents a window.
    */
   class extends HTMLElement {
     /**

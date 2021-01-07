@@ -8,6 +8,7 @@
 const BG_URL = (new URL('./images/sky-wallpaper.jpg', import.meta.url)).href
 const MEMORY_ICON_URL = (new URL('./images/memory-game-icon.png', import.meta.url)).href
 const MESSAGE_ICON_URL = (new URL('./images/message-icon.png', import.meta.url)).href
+const TODO_ICON_URL = (new URL('./images/todo-icon.png', import.meta.url)).href
 
 /**
  * Define template.
@@ -51,11 +52,12 @@ template.innerHTML = `
     }
   </style>
   <div class="pwd-container">
-      <my-window><h1>A</h1></my-window>
-      <my-window><h1>B</h1></my-window>
+      <my-window><my-message-app></my-message-app></my-window>
+      <!--<my-window><h1>B</h1></my-window>-->
       <div class="dock">
           <input type="image" id="memory" src="${MEMORY_ICON_URL}">
           <input type="image" id="message" src="${MESSAGE_ICON_URL}">
+          <input type="image" id="message" src="${TODO_ICON_URL}">
       </div>
   </div>
   `
