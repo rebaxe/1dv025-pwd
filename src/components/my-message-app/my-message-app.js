@@ -80,6 +80,7 @@ template.innerHTML = `
         color: #38A793;
         font-family: 'Bungee Outline', cursive;
         padding: 10px;
+        text-align: center;
     }
     .message-display {
         width: 90%;
@@ -158,7 +159,7 @@ template.innerHTML = `
   <div class="message-app-container">
     <div class="startpage">
       <div class="startpage-content">
-        <h1>Welcome to the Coursepress chat!</h1>
+        <h1>Welcome to the Chat!</h1>
         <form> 
           <input type="text" placeholder="Name" required>
           <input type="submit" id="connect-btn" value="Connect">
@@ -166,7 +167,7 @@ template.innerHTML = `
         
       </div>
     </div>
-    <h1>Coursepress chat</h1>
+    <h1>The Chat</h1>
     <div class="message-display">
     </div>
     <form class="message-input">
@@ -196,16 +197,19 @@ customElements.define('my-message-app',
         .appendChild(template.content.cloneNode(true))
 
       this.name =
+      this.socket =
 
       this.startPage = this.shadowRoot.querySelector('.startpage')
       this.connectForm = this.shadowRoot.querySelector('.startpage-content > form')
       this.nameInput = this.shadowRoot.querySelector('.startpage-content > form > input[type="text"]')
       this.messageForm = this.shadowRoot.querySelector('form.message-input')
+      this.messageInput = this.shadowRoot.querySelector('form.message-input > input[type="text"]')
       this.messageDisplay = this.shadowRoot.querySelector('.message-display')
       this.messageTemplate = this.shadowRoot.querySelector('#new-message')
 
       this.init = this.init.bind(this)
       this._onOpen = this._onOpen.bind(this)
+      this._sendMessage = this._sendMessage.bind(this)
     }
 
     /**
@@ -236,6 +240,7 @@ customElements.define('my-message-app',
       this.name = this.nameInput.value
       console.log(this.name)
       const socket = new WebSocket('wss://cscloud6-127.lnu.se/socket/')
+      this.socket = socket
       /**
        * Listens for opening of the connection.
        */
@@ -252,7 +257,7 @@ customElements.define('my-message-app',
         console.log(event.data)
         const message = JSON.parse(event.data)
         const messageBubble = this.messageTemplate.content.cloneNode(true)
-        messageBubble.querySelector('.name').textContent = message.username
+        messageBubble.querySelector('.name').textContent = `${message.username} says:`
         messageBubble.querySelector('.message').textContent = message.data
         this.messageDisplay.appendChild(messageBubble)
       }
@@ -275,8 +280,19 @@ customElements.define('my-message-app',
     _sendMessage (event) {
       // Prevents submitting of form and refresh of page.
       event.preventDefault()
+      // Fetches input message.
+      const message = this.messageInput.value
+      // Creates message that should be sent.
+      const messageToSend = {
+        type: 'message',
+        data: `${message}`,
+        username: `${this.name}`,
+        channel: '',
+        key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
+      }
+      const jsonMessage = JSON.stringify(messageToSend)
+      this.socket.send(jsonMessage)
       // Clears the input text field.
       event.target.reset()
-      console.log('Send')
     }
   })
