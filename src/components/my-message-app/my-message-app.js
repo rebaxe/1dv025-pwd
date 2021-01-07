@@ -79,6 +79,7 @@ template.innerHTML = `
         margin-top: 35px;
         color: #38A793;
         font-family: 'Bungee Outline', cursive;
+        padding: 10px;
     }
     .message-display {
         width: 90%;
@@ -148,12 +149,18 @@ template.innerHTML = `
     }
 
   </style>
+  <template id="new-message">
+    <ul>
+      <li class="name"></li>
+      <li class="message"></li>
+    </ul>
+  </template>
   <div class="message-app-container">
     <div class="startpage">
       <div class="startpage-content">
         <h1>Welcome to the Coursepress chat!</h1>
         <form> 
-          <input type="text" placeholder="Name">
+          <input type="text" placeholder="Name" required>
           <input type="submit" id="connect-btn" value="Connect">
         </form>
         
@@ -161,16 +168,11 @@ template.innerHTML = `
     </div>
     <h1>Coursepress chat</h1>
     <div class="message-display">
-        <ul>
-            <li class="name">Name</li>
-            <li class="message">Message</li>
-        </ul>
     </div>
-    <div class="message-input">
-        <input type="text" id="message" placeholder="Type message here...">
+    <form class="message-input">
+        <input type="text" id="message" placeholder="Type message here..." required autocomplete="off">
         <input type="submit" value="Send">
-    </div>
-    
+    </form>
   </div>
   `
 
@@ -198,6 +200,9 @@ customElements.define('my-message-app',
       this.startPage = this.shadowRoot.querySelector('.startpage')
       this.connectForm = this.shadowRoot.querySelector('.startpage-content > form')
       this.nameInput = this.shadowRoot.querySelector('.startpage-content > form > input[type="text"]')
+      this.messageForm = this.shadowRoot.querySelector('form.message-input')
+      this.messageDisplay = this.shadowRoot.querySelector('.message-display')
+      this.messageTemplate = this.shadowRoot.querySelector('#new-message')
 
       this.init = this.init.bind(this)
       this._onOpen = this._onOpen.bind(this)
@@ -208,6 +213,7 @@ customElements.define('my-message-app',
      */
     connectedCallback () {
       this.connectForm.addEventListener('submit', this.init)
+      this.messageForm.addEventListener('submit', this._sendMessage)
     }
 
     /**
@@ -215,6 +221,7 @@ customElements.define('my-message-app',
      */
     disconnectedCallback () {
       this.connectForm.removeEventListener('submit', this.init)
+      this.messageForm.removeEventListener('submit', this._sendMessage)
     }
 
     /**
@@ -229,14 +236,47 @@ customElements.define('my-message-app',
       this.name = this.nameInput.value
       console.log(this.name)
       const socket = new WebSocket('wss://cscloud6-127.lnu.se/socket/')
+      /**
+       * Listens for opening of the connection.
+       */
       socket.onopen = () => {
         this._onOpen()
         console.log('Open')
       }
+
+      socket.onclose = () => {
+        console.log('Closed')
+      }
+
+      socket.onmessage = (event) => {
+        console.log(event.data)
+        const message = JSON.parse(event.data)
+        const messageBubble = this.messageTemplate.content.cloneNode(true)
+        messageBubble.querySelector('.name').textContent = message.username
+        messageBubble.querySelector('.message').textContent = message.data
+        this.messageDisplay.appendChild(messageBubble)
+      }
     }
 
+    /**
+     * Called when a WebSocket connection is opened.
+     */
     _onOpen () {
+      // Removes the start page.
       this.startPage.classList.add('hidden')
       console.log('Open connection')
+    }
+
+    /**
+     * Sends the message.
+     *
+     * @param {Event} event Representing a submit event.
+     */
+    _sendMessage (event) {
+      // Prevents submitting of form and refresh of page.
+      event.preventDefault()
+      // Clears the input text field.
+      event.target.reset()
+      console.log('Send')
     }
   })
