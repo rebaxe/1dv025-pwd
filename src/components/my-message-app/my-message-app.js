@@ -1,3 +1,4 @@
+/* eslint-disable eol-last */
 /**
  * The my-message-app web component module.
  *
@@ -26,7 +27,54 @@ template.innerHTML = `
         justify-content: center;
         align-items: center;
         background-color: #26695D;
+        position: relative;
     }
+    .startpage {
+      height: 100%;
+      width: 100%;
+      background-color: #26695D;
+      z-index: 9;
+      position: absolute; 
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .startpage-content {
+      height: 80%;
+      weight: 80%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    .startpage-content > form > input[type="text"] {
+      padding: 0 3px;
+      outline: none;
+      transition: 0.3s ease-in-out;
+      border-radius: 4px;
+    }
+
+    .startpage-content > form > input[type="text"]:focus {
+        box-shadow: 0 0 10px rgba(106, 217, 197, 0.9);
+    }
+
+    .startpage-content > form > input[type="submit"] {
+        padding: 5px;
+        border: 2px solid #38A793;
+        background-color: #38A793;
+        color: #26695D;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+
     .message-app-container > h1 {
         margin-top: 35px;
         color: #38A793;
@@ -65,7 +113,7 @@ template.innerHTML = `
         flex-direction: row;
         justify-content: center;
     }
-    input {
+    .message-input input, .startpage-content input {
         height: 30px;
         padding: 0px;
         border: 0;
@@ -84,19 +132,29 @@ template.innerHTML = `
     .message-input > input[type="submit"] {
         background-color: #38A793;
         width: 20%;
-        color: #F5F5F5;
+        color: #26695D;
         text-transform: uppercase;
         font-weight: bold;
         border-radius: 5px;
     }
-    .message-input > input[type="submit"]:hover {
+    .message-input > input[type="submit"]:hover, .startpage-content > form > input[type="submit"]:hover {
         border: 2px solid #38A793;
-        background-color: #F5F5F5;
+        background-color: #26695D;
         color: #38A793;
     }
 
   </style>
   <div class="message-app-container">
+    <div class="startpage">
+      <div class="startpage-content">
+        <h1>Welcome to the Coursepress chat!</h1>
+        <form> 
+          <input type="text" placeholder="Name">
+          <input type="submit" id="connect-btn" value="Connect">
+        </form>
+        
+      </div>
+    </div>
     <h1>Coursepress chat</h1>
     <div class="message-display">
         <ul>
@@ -108,6 +166,7 @@ template.innerHTML = `
         <input type="text" id="message" placeholder="Type message here...">
         <input type="submit" value="Send">
     </div>
+    
   </div>
   `
 
@@ -129,5 +188,34 @@ customElements.define('my-message-app',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
+
+      this.connectBtn = this.shadowRoot.querySelector('#connect-btn')
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this.connectBtn.addEventListener('click', this.init)
+      this.addEventListener('open', this._onOpen)
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    disconnectedCallback () {
+      this.removeEventListener('open', this._onOpen)
+    }
+
+    init () {
+      console.log('Clicked')
+      const socket = new WebSocket('wss://cscloud6-127.lnu.se/socket/')
+      socket.onopen = () => {
+        console.log('Open')
+      }
+    }
+
+    _onOpen () {
+      console.log('Open connection')
     }
   })
