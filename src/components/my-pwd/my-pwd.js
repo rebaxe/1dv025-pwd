@@ -52,12 +52,10 @@ template.innerHTML = `
     }
   </style>
   <div class="pwd-container">
-      <my-window><my-message-app></my-message-app></my-window>
-      <!--<my-window><h1>B</h1></my-window>-->
       <div class="dock">
-          <input type="image" id="memory" src="${MEMORY_ICON_URL}">
-          <input type="image" id="message" src="${MESSAGE_ICON_URL}">
-          <input type="image" id="message" src="${TODO_ICON_URL}">
+          <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}">
+          <input type="image" id="message-icon" src="${MESSAGE_ICON_URL}">
+          <input type="image" id="todo-icon" src="${TODO_ICON_URL}">
       </div>
   </div>
   `
@@ -81,7 +79,9 @@ customElements.define('my-pwd',
         .appendChild(template.content.cloneNode(true))
 
       this.pwd = this.shadowRoot.querySelector('.pwd-container')
+      this.messageAppIcon = this.shadowRoot.querySelector('#message-icon')
 
+      this._openMessageApp = this._openMessageApp.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
     }
 
@@ -93,6 +93,7 @@ customElements.define('my-pwd',
       this.pwd.addEventListener('front', (event) => {
         event.target.parentNode.appendChild(event.target)
       })
+      this.messageAppIcon.addEventListener('click', this._openMessageApp)
     }
 
     /**
@@ -102,6 +103,13 @@ customElements.define('my-pwd',
       this.pwd.removeEventListener('close', this._closeWindow)
     }
 
+    _openMessageApp () {
+      const windowElement = document.createElement('my-window')
+      const messageApp = document.createElement('my-message-app')
+      windowElement.appendChild(messageApp)
+      this.pwd.appendChild(windowElement)
+      messageApp.init()
+    }
     /**
      * Removes a window element.
      *

@@ -148,7 +148,6 @@ template.innerHTML = `
     .hidden {
       display: none;
     }
-
   </style>
   <template id="new-message">
     <ul>
@@ -208,6 +207,7 @@ customElements.define('my-message-app',
       this.messageTemplate = this.shadowRoot.querySelector('#new-message')
 
       this.init = this.init.bind(this)
+      this._connectWebSocket = this._connectWebSocket.bind(this)
       this._onOpen = this._onOpen.bind(this)
       this._sendMessage = this._sendMessage.bind(this)
     }
@@ -216,7 +216,7 @@ customElements.define('my-message-app',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.connectForm.addEventListener('submit', this.init)
+      // this.connectForm.addEventListener('submit', this._onOpen)
       this.messageForm.addEventListener('submit', this._sendMessage)
     }
 
@@ -224,42 +224,63 @@ customElements.define('my-message-app',
      * Called after the element is inserted into the DOM.
      */
     disconnectedCallback () {
-      this.connectForm.removeEventListener('submit', this.init)
+      // this.connectForm.removeEventListener('submit', this._onOpen)
       this.messageForm.removeEventListener('submit', this._sendMessage)
     }
 
     /**
      * Initializes the start of the chat application.
-     *
-     * @param {Event} event An event representing the submit event.
      */
-    init (event) {
-      event.preventDefault()
-      console.log('Clicked')
-
-      this.name = this.nameInput.value
+    init () {
+      // const username = localStorage.getItem('username')
+      if (localStorage.getItem('username')) {
+        this.name = localStorage.getItem('username')
+        this.startPage.classList.add('hidden')
+        this._connectWebSocket()
+      } else {
+        this.connectForm.addEventListener('submit', (event) => {
+          event.preventDefault()
+          this.name = this.nameInput.value
+          localStorage.setItem('username', this.name)
+          this._connectWebSocket()
+        })
+      }
       console.log(this.name)
+    }
+
+    /**
+     * Establish WebSocket connection.
+     */
+    _connectWebSocket () {
       const socket = new WebSocket('wss://cscloud6-127.lnu.se/socket/')
       this.socket = socket
       /**
        * Listens for opening of the connection.
        */
-      socket.onopen = () => {
+      this.socket.onopen = () => {
         this._onOpen()
         console.log('Open')
       }
-
-      socket.onclose = () => {
+      /**
+       * Listens for closing of the connection.
+       */
+      this.socket.onclose = () => {
         console.log('Closed')
       }
-
-      socket.onmessage = (event) => {
+      /**
+       * Listens for closing of the connection.
+       *
+       * @param {Event} event The event.
+       */
+      this.socket.onmessage = (event) => {
         console.log(event.data)
         const message = JSON.parse(event.data)
         const messageBubble = this.messageTemplate.content.cloneNode(true)
         messageBubble.querySelector('.name').textContent = `${message.username} says:`
         messageBubble.querySelector('.message').textContent = message.data
         this.messageDisplay.appendChild(messageBubble)
+        const lastMessage = this.messageDisplay.lastElementChild
+        lastMessage.scrollIntoView()
       }
     }
 
