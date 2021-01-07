@@ -26,6 +26,7 @@ template.innerHTML = `
           position: absolute;
           top: 0;
           left: 0;
+          z-index: 999;
           width: 100%;
           height: 24px;
           background-color: grey;
@@ -64,6 +65,7 @@ template.innerHTML = `
         width: 100%;
         height: calc(100% - 24px);
       }
+
   </style>
   <div class="window-container">
     <div class="top-bar">

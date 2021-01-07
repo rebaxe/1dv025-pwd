@@ -143,6 +143,10 @@ template.innerHTML = `
         color: #38A793;
     }
 
+    .hidden {
+      display: none;
+    }
+
   </style>
   <div class="message-app-container">
     <div class="startpage">
@@ -189,33 +193,50 @@ customElements.define('my-message-app',
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
 
-      this.connectBtn = this.shadowRoot.querySelector('#connect-btn')
+      this.name =
+
+      this.startPage = this.shadowRoot.querySelector('.startpage')
+      this.connectForm = this.shadowRoot.querySelector('.startpage-content > form')
+      this.nameInput = this.shadowRoot.querySelector('.startpage-content > form > input[type="text"]')
+
+      this.init = this.init.bind(this)
+      this._onOpen = this._onOpen.bind(this)
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.connectBtn.addEventListener('click', this.init)
-      this.addEventListener('open', this._onOpen)
+      this.connectForm.addEventListener('submit', this.init)
     }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     disconnectedCallback () {
-      this.removeEventListener('open', this._onOpen)
+      this.connectForm.removeEventListener('submit', this.init)
     }
 
-    init () {
+    /**
+     * Initializes the start of the chat application.
+     *
+     * @param {Event} event An event representing the submit event.
+     */
+    init (event) {
+      event.preventDefault()
       console.log('Clicked')
+
+      this.name = this.nameInput.value
+      console.log(this.name)
       const socket = new WebSocket('wss://cscloud6-127.lnu.se/socket/')
       socket.onopen = () => {
+        this._onOpen()
         console.log('Open')
       }
     }
 
     _onOpen () {
+      this.startPage.classList.add('hidden')
       console.log('Open connection')
     }
   })
