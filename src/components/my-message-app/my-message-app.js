@@ -12,6 +12,11 @@ const template = document.createElement('template')
 template.innerHTML = `
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bungee+Outline&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bungee+Outline&family=Open+Sans:wght@400;700&display=swap');
+
+    * {
+        font-family: 'Open Sans', sans-serif;
+    }
 
     .message-app-container {
         height: 100%;
@@ -33,6 +38,23 @@ template.innerHTML = `
         background-color: #F5F5F5;
         border-radius: 5px;
         overflow: scroll;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        max-width: 60%;
+        padding: 5px;
+        list-style: none;
+    }
+    li.name {
+        padding: 0px;
+        font-size: 0.8rem;
+    }
+    li.message {
+        border-radius: 5px;
+        background-color: #38A793;
+        font-size: 0.9rem;
     }
     .message-input {
         width: 90%;
@@ -77,6 +99,10 @@ template.innerHTML = `
   <div class="message-app-container">
     <h1>Coursepress chat</h1>
     <div class="message-display">
+        <ul>
+            <li class="name">Name</li>
+            <li class="message">Message</li>
+        </ul>
     </div>
     <div class="message-input">
         <input type="text" id="message" placeholder="Type message here...">

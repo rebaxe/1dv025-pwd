@@ -181,6 +181,9 @@ customElements.define('my-window',
       }))
     }
 
+    /**
+     * Called when the user clicks a window.
+     */
     frontWindow () {
       this.dispatchEvent(new CustomEvent('front', {
         bubbles: true
