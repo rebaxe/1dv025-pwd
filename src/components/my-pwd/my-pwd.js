@@ -103,13 +103,17 @@ customElements.define('my-pwd',
       this.pwd.removeEventListener('close', this._closeWindow)
     }
 
+    /**
+     * Opens and starts the message sub app.
+     */
     _openMessageApp () {
       const windowElement = document.createElement('my-window')
       const messageApp = document.createElement('my-message-app')
       windowElement.appendChild(messageApp)
       this.pwd.appendChild(windowElement)
-      messageApp.init()
+      messageApp.run()
     }
+
     /**
      * Removes a window element.
      *

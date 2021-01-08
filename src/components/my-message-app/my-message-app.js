@@ -206,7 +206,7 @@ customElements.define('my-message-app',
       this.messageDisplay = this.shadowRoot.querySelector('.message-display')
       this.messageTemplate = this.shadowRoot.querySelector('#new-message')
 
-      this.init = this.init.bind(this)
+      this.run = this.run.bind(this)
       this._connectWebSocket = this._connectWebSocket.bind(this)
       this._onOpen = this._onOpen.bind(this)
       this._sendMessage = this._sendMessage.bind(this)
@@ -229,9 +229,9 @@ customElements.define('my-message-app',
     }
 
     /**
-     * Initializes the start of the chat application.
+     * Runs the chat application.
      */
-    init () {
+    run () {
       // const username = localStorage.getItem('username')
       if (localStorage.getItem('username')) {
         this.name = localStorage.getItem('username')
@@ -273,12 +273,14 @@ customElements.define('my-message-app',
        * @param {Event} event The event.
        */
       this.socket.onmessage = (event) => {
-        console.log(event.data)
+        // Parse JSON data and get message.
         const message = JSON.parse(event.data)
+        // Create a "message bubble" and insert user name and message, then insert in message display.
         const messageBubble = this.messageTemplate.content.cloneNode(true)
         messageBubble.querySelector('.name').textContent = `${message.username} says:`
         messageBubble.querySelector('.message').textContent = message.data
         this.messageDisplay.appendChild(messageBubble)
+        // Move scroll to latest message.
         const lastMessage = this.messageDisplay.lastElementChild
         lastMessage.scrollIntoView()
       }
