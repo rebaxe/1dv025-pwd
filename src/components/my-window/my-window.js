@@ -20,6 +20,8 @@ template.innerHTML = `
         border-radius: 5px;
         border: 1px solid grey;
         position: absolute;
+        top: 20px;
+        left: 20px;
         box-shadow: 0 0 10px #333;
       }
       .top-bar {
@@ -168,9 +170,9 @@ customElements.define('my-window',
         _moveWindow(window, event)
       }
 
-      document.addEventListener('mousemove', _onMouseMove)
-      document.addEventListener('mouseup', () => {
-        document.removeEventListener('mousemove', _onMouseMove)
+      this.addEventListener('mousemove', _onMouseMove)
+      this.addEventListener('mouseup', () => {
+        this.removeEventListener('mousemove', _onMouseMove)
       })
     }
 

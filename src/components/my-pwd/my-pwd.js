@@ -81,8 +81,11 @@ customElements.define('my-pwd',
         .appendChild(template.content.cloneNode(true))
 
       this.pwd = this.shadowRoot.querySelector('.pwd-container')
+      this.memoryGameIcon = this.shadowRoot.querySelector('#memory-icon')
       this.messageAppIcon = this.shadowRoot.querySelector('#message-icon')
+      this.windowElement = this.querySelectorAll('my-window')
 
+      this._openMemoryGame = this._openMemoryGame.bind(this)
       this._openMessageApp = this._openMessageApp.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
     }
@@ -96,6 +99,7 @@ customElements.define('my-pwd',
         event.target.parentNode.appendChild(event.target)
       })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
+      this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
     }
 
     /**
@@ -103,6 +107,11 @@ customElements.define('my-pwd',
      */
     disconnectedCallback () {
       this.pwd.removeEventListener('close', this._closeWindow)
+      this.pwd.removeEventListener('front', (event) => {
+        event.target.parentNode.appendChild(event.target)
+      })
+      this.messageAppIcon.removeEventListener('click', this._openMessageApp)
+      this.memoryGameIcon.removeEventListener('click', this._openMemoryGame)
     }
 
     /**
@@ -114,6 +123,13 @@ customElements.define('my-pwd',
       windowElement.appendChild(messageApp)
       this.pwd.appendChild(windowElement)
       messageApp.run()
+    }
+
+    _openMemoryGame () {
+      const windowElement = document.createElement('my-window')
+      const memoryGame = document.createElement('my-memory-game')
+      windowElement.appendChild(memoryGame)
+      this.pwd.appendChild(windowElement)
     }
 
     /**
