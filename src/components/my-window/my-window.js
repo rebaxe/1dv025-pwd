@@ -19,14 +19,14 @@ template.innerHTML = `
         background-color: white;
         border-radius: 5px;
         border: 1px solid grey;
-        position:relative;
+        position: absolute;
         box-shadow: 0 0 10px #333;
       }
       .top-bar {
           position: absolute;
           top: 0;
           left: 0;
-          z-index: 999;
+          /* z-index: 9;*/  
           width: 100%;
           height: 24px;
           background-color: grey;
@@ -61,17 +61,19 @@ template.innerHTML = `
         z-index: 1000;
       }
 
-      slot {
+      .window-content {
         width: 100%;
         height: calc(100% - 24px);
+        margin-top: 24px;
       }
-
   </style>
   <div class="window-container">
     <div class="top-bar">
       <div id="close-btn"></div>
     </div>
+    <div class="window-content">
     <slot></slot>
+    <div>
   </div>
   `
 /**
@@ -119,6 +121,7 @@ customElements.define('my-window',
       this.windowEl.removeEventListener('dragstart', this._onDragStart)
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
       this.closeBtn.removeEventListener('click', this.closeWindow)
+      this.removeEventListener('click', this.frontWindow)
     }
 
     /**
@@ -132,7 +135,7 @@ customElements.define('my-window',
       }
       this.frontWindow()
       const window = this.windowEl
-      window.classList.add('mouse-down')
+      // window.classList.add('mouse-down')
       const distanceToPointerX = event.clientX - event.target.getBoundingClientRect().left
       const distanceToPointerY = event.clientY - event.target.getBoundingClientRect().top
       _moveWindow(window, event)
@@ -168,7 +171,6 @@ customElements.define('my-window',
       document.addEventListener('mousemove', _onMouseMove)
       document.addEventListener('mouseup', () => {
         document.removeEventListener('mousemove', _onMouseMove)
-        
       })
     }
 

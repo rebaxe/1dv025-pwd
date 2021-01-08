@@ -76,7 +76,7 @@ template.innerHTML = `
     }
 
     .message-app-container > h1 {
-        margin-top: 35px;
+        margin-top: 15px;
         color: #38A793;
         font-family: 'Bungee Outline', cursive;
         padding: 10px;
@@ -131,6 +131,7 @@ template.innerHTML = `
     }
     .message-input > input[type="submit"] {
         background-color: #38A793;
+        border: 2px solid #38A793;
         width: 20%;
         color: #26695D;
         text-transform: uppercase;
@@ -145,7 +146,7 @@ template.innerHTML = `
     .dark-mode-container {
       width: 90%;
       position: absolute;
-      top: 35px;
+      top: 10px;
       right: 5%;
       display: flex;
       flex-direction: row;
@@ -208,7 +209,7 @@ template.innerHTML = `
     <div class="message-display">
     </div>
     <form class="message-input">
-        <input type="text" id="message" placeholder="Type message here..." required autocomplete="off">
+        <input type="text" id="message" placeholder="Type message here..." required autocomplete="off" autofocus>
         <input type="submit" value="Send">
     </form>
     <div class="dark-mode-container">
@@ -261,7 +262,6 @@ customElements.define('my-message-app',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      // this.connectForm.addEventListener('submit', this._onOpen)
       this.messageForm.addEventListener('submit', this._sendMessage)
       this.darkModeBtn.addEventListener('click', this._toggleDarkMode)
     }
@@ -270,7 +270,6 @@ customElements.define('my-message-app',
      * Called after the element is inserted into the DOM.
      */
     disconnectedCallback () {
-      // this.connectForm.removeEventListener('submit', this._onOpen)
       this.messageForm.removeEventListener('submit', this._sendMessage)
       this.darkModeBtn.removeEventListener('click', this._toggleDarkMode)
     }
