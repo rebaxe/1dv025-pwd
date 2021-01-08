@@ -21,6 +21,8 @@ template.innerHTML = `
       width: 100vw;
       background: url(${BG_URL});
       background-size: cover;
+      overflow: hidden;
+      margin: 0;
     }
     .dock {
       background-color: rgba(75, 74, 74, 0.75);

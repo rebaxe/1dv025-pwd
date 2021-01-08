@@ -144,8 +144,17 @@ customElements.define('my-window',
        * @param {MouseEvent} event The mouse event.
        */
       function _moveWindow (window, event) {
-        window.style.left = event.pageX - distanceToPointerX + 'px'
         window.style.top = event.pageY - distanceToPointerY + 'px'
+        window.style.left = event.pageX - distanceToPointerX + 'px'
+
+        // Window can't be moved outside (top level).
+        if (window.offsetTop <= 0) {
+          window.style.top = 0
+        }
+        // Window can't be moves outside (left border)
+        if (window.offsetLeft <= 0) {
+          window.style.left = 0
+        }
       }
       /**
        * Moves the window.
@@ -159,6 +168,7 @@ customElements.define('my-window',
       document.addEventListener('mousemove', _onMouseMove)
       document.addEventListener('mouseup', () => {
         document.removeEventListener('mousemove', _onMouseMove)
+        
       })
     }
 
