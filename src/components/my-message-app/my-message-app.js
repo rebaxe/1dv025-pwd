@@ -20,14 +20,14 @@ template.innerHTML = `
     }
 
     .message-app-container {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: #26695D;
-        position: relative;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #26695D;
+      position: relative;
     }
     .startpage {
       height: 100%;
@@ -108,9 +108,7 @@ template.innerHTML = `
     }
     .message-input {
         width: 90%;
-        height: 15%;
-        margin: 20px;
-        background-color: #26695D;
+        margin: 15px;
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -144,6 +142,47 @@ template.innerHTML = `
         background-color: #26695D;
         color: #38A793;
     }
+    .dark-mode-container {
+      width: 90%;
+      position: absolute;
+      top: 35px;
+      right: 5%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    button.switch {
+      background-color: #38A793;
+      border: 2px solid #38A793;
+      border-radius: 3px;
+      font-size: 1rem;
+    }
+    button.switch:hover, button.switch:focus {
+      border: 2px solid #38A793;
+      background-color: #26695D;
+      color: #38A793;
+      outline: none;
+    }
+    .dark-bg {
+      background-color: #000 !important;
+      color: white !important;
+    }
+    .dark-content {
+      background-color: #333;
+    }
+    .dark-h1 {
+      color: white !important;
+    }
+    .dark-btn {
+      background-color: #333 !important;
+      color: white !important;
+      border: 2px solid #333 !important;
+    }
+    .dark-btn:hover {
+      background-color: #000 !important;
+      border: 2px solid white !important;
+    }
 
     .hidden {
       display: none;
@@ -163,16 +202,18 @@ template.innerHTML = `
           <input type="text" placeholder="Name" required>
           <input type="submit" id="connect-btn" value="Connect">
         </form>
-        
       </div>
     </div>
-    <h1>The Chat</h1>
+    <h1 class="heading">The Chat</h1>
     <div class="message-display">
     </div>
     <form class="message-input">
         <input type="text" id="message" placeholder="Type message here..." required autocomplete="off">
         <input type="submit" value="Send">
     </form>
+    <div class="dark-mode-container">
+      <button class="switch">&#127771</button>
+    </div>
   </div>
   `
 
@@ -201,15 +242,20 @@ customElements.define('my-message-app',
       this.startPage = this.shadowRoot.querySelector('.startpage')
       this.connectForm = this.shadowRoot.querySelector('.startpage-content > form')
       this.nameInput = this.shadowRoot.querySelector('.startpage-content > form > input[type="text"]')
+      this.messageAppContainer = this.shadowRoot.querySelector('.message-app-container')
       this.messageForm = this.shadowRoot.querySelector('form.message-input')
       this.messageInput = this.shadowRoot.querySelector('form.message-input > input[type="text"]')
+      this.sendBtn = this.shadowRoot.querySelector('form.message-input > input[type="submit"]')
       this.messageDisplay = this.shadowRoot.querySelector('.message-display')
       this.messageTemplate = this.shadowRoot.querySelector('#new-message')
+      this.darkMode = this.shadowRoot.querySelector('.dark-mode-container')
+      this.darkModeBtn = this.shadowRoot.querySelector('button.switch')
 
       this.run = this.run.bind(this)
       this._connectWebSocket = this._connectWebSocket.bind(this)
       this._onOpen = this._onOpen.bind(this)
       this._sendMessage = this._sendMessage.bind(this)
+      this._toggleDarkMode = this._toggleDarkMode.bind(this)
     }
 
     /**
@@ -218,6 +264,7 @@ customElements.define('my-message-app',
     connectedCallback () {
       // this.connectForm.addEventListener('submit', this._onOpen)
       this.messageForm.addEventListener('submit', this._sendMessage)
+      this.darkMode.addEventListener('click', this._toggleDarkMode)
     }
 
     /**
@@ -226,6 +273,7 @@ customElements.define('my-message-app',
     disconnectedCallback () {
       // this.connectForm.removeEventListener('submit', this._onOpen)
       this.messageForm.removeEventListener('submit', this._sendMessage)
+      this.darkMode.removeEventListener('click', this._toggleDarkMode)
     }
 
     /**
@@ -245,7 +293,6 @@ customElements.define('my-message-app',
           this._connectWebSocket()
         })
       }
-      console.log(this.name)
     }
 
     /**
@@ -259,7 +306,6 @@ customElements.define('my-message-app',
        */
       this.socket.onopen = () => {
         this._onOpen()
-        console.log('Open')
       }
       /**
        * Listens for closing of the connection.
@@ -292,7 +338,6 @@ customElements.define('my-message-app',
     _onOpen () {
       // Removes the start page.
       this.startPage.classList.add('hidden')
-      console.log('Open connection')
     }
 
     /**
@@ -317,5 +362,17 @@ customElements.define('my-message-app',
       this.socket.send(jsonMessage)
       // Clears the input text field.
       event.target.reset()
+    }
+
+    /**
+     * Toggles dark mode.
+     */
+    _toggleDarkMode () {
+      const heading = this.shadowRoot.querySelector('.heading')
+      heading.classList.toggle('dark-h1')
+      this.messageAppContainer.classList.toggle('dark-bg')
+      this.darkModeBtn.classList.toggle('dark-btn')
+      this.sendBtn.classList.toggle('dark-btn')
+      this.messageDisplay.classList.toggle('dark-content')
     }
   })
