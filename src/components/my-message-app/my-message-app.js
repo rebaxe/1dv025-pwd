@@ -248,7 +248,6 @@ customElements.define('my-message-app',
       this.sendBtn = this.shadowRoot.querySelector('form.message-input > input[type="submit"]')
       this.messageDisplay = this.shadowRoot.querySelector('.message-display')
       this.messageTemplate = this.shadowRoot.querySelector('#new-message')
-      this.darkMode = this.shadowRoot.querySelector('.dark-mode-container')
       this.darkModeBtn = this.shadowRoot.querySelector('button.switch')
 
       this.run = this.run.bind(this)
@@ -264,7 +263,7 @@ customElements.define('my-message-app',
     connectedCallback () {
       // this.connectForm.addEventListener('submit', this._onOpen)
       this.messageForm.addEventListener('submit', this._sendMessage)
-      this.darkMode.addEventListener('click', this._toggleDarkMode)
+      this.darkModeBtn.addEventListener('click', this._toggleDarkMode)
     }
 
     /**
@@ -273,7 +272,7 @@ customElements.define('my-message-app',
     disconnectedCallback () {
       // this.connectForm.removeEventListener('submit', this._onOpen)
       this.messageForm.removeEventListener('submit', this._sendMessage)
-      this.darkMode.removeEventListener('click', this._toggleDarkMode)
+      this.darkModeBtn.removeEventListener('click', this._toggleDarkMode)
     }
 
     /**

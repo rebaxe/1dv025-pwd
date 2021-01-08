@@ -109,6 +109,7 @@ customElements.define('my-window',
       this.windowEl.addEventListener('dragstart', this._onDragStart)
       this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
       this.closeBtn.addEventListener('click', this.closeWindow)
+      this.addEventListener('click', this.frontWindow)
     }
 
     /**
@@ -130,13 +131,10 @@ customElements.define('my-window',
         this.closeWindow()
       }
       this.frontWindow()
-
       const window = this.windowEl
       window.classList.add('mouse-down')
-
       const distanceToPointerX = event.clientX - event.target.getBoundingClientRect().left
       const distanceToPointerY = event.clientY - event.target.getBoundingClientRect().top
-
       _moveWindow(window, event)
 
       /**
@@ -149,7 +147,6 @@ customElements.define('my-window',
         window.style.left = event.pageX - distanceToPointerX + 'px'
         window.style.top = event.pageY - distanceToPointerY + 'px'
       }
-
       /**
        * Moves the window.
        *
