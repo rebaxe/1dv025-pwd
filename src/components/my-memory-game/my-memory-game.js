@@ -140,7 +140,7 @@ template.innerHTML = `
     <div class="finished-page-container hidden">
       <div class="finished-page-window">
         <h3>Congratulations!</h3>
-        <p>You made it in <span class="attempts"></span> attemps.</p>
+        <p>You made it in <span class="attempts"></span> attemps in <span class="time"></span>.</p>
         <button>Try again</button>
       </div>
     </div>
@@ -150,9 +150,9 @@ template.innerHTML = `
       <div class="counter">
         <h3>0 Attempts</h3>
       </div>
-      <!-- <div class="timer">
-        <h3>00:23</h3>
-      </div> -->
+      <div class="timer">
+        <h3><span id="minutes">00</span>:<span id="seconds">00</span></h3>
+      </div>
     </div>
   </div>
   `
@@ -174,6 +174,9 @@ customElements.define('my-memory-game',
         .appendChild(template.content.cloneNode(true))
 
       this.attemptsCount = 0
+      this.timer =
+      this.timerSeconds = 0
+      this.timerMinutes = 0
 
       this._startPage = this.shadowRoot.querySelector('.startpage')
       this._buttons = this.shadowRoot.querySelector('.button-container')
@@ -187,6 +190,7 @@ customElements.define('my-memory-game',
       this._createBoard = this._createBoard.bind(this)
       this._onFlip = this._onFlip.bind(this)
       this._onTryAgain = this._onTryAgain.bind(this)
+      this._startStopWatch = this._startStopWatch.bind(this)
     }
 
     /**
@@ -230,8 +234,6 @@ customElements.define('my-memory-game',
      * @param {Event} event Representing a click event.
      */
     _createBoard (event) {
-      this._startPage.classList.add('hidden')
-      this._gameBoard.classList.remove('hidden')
       if (event.target === this._smallButton) {
         this._gameBoard.classList.add('small-board')
         this._fillBoard(4)
@@ -241,7 +243,11 @@ customElements.define('my-memory-game',
       } else if (event.target === this._largeButton) {
         this._gameBoard.classList.add('large-board')
         this._fillBoard(16)
+      } else {
+        return
       }
+      this._startPage.classList.add('hidden')
+      this._gameBoard.classList.remove('hidden')
       this._tracker.classList.remove('hidden')
     }
 
@@ -262,6 +268,7 @@ customElements.define('my-memory-game',
         tile.appendChild(img)
         this._gameBoard.appendChild(tile)
       }
+      this._startStopWatch()
     }
 
     /**
@@ -356,14 +363,53 @@ customElements.define('my-memory-game',
     }
 
     /**
+     * Starts a stop watch.
+     */
+    _startStopWatch () {
+      const minutesDisplay = this.shadowRoot.querySelector('#minutes')
+      const secondsDisplay = this.shadowRoot.querySelector('#seconds')
+      let seconds = 0
+      let minutes = 0
+
+      this.timer = setInterval(stopWatch, 1000)
+      /**
+       * Acts as stop watch.
+       */
+      function stopWatch () {
+        seconds++
+        if (seconds <= 9) {
+          secondsDisplay.textContent = `0${seconds}`
+        }
+        if (seconds > 9) {
+          secondsDisplay.textContent = `${seconds}`
+        }
+        if (seconds > 59) {
+          minutes++
+          seconds = 0
+          minutesDisplay.textContent = `0${minutes}`
+          secondsDisplay.textContent = `0${seconds}`
+        }
+      }
+    }
+
+    // _stopStopWatch () {
+    //
+    // }
+
+    /**
      * Called when user finish the game.
      */
     _onFinish () {
+      clearInterval(this.timer)
+      const minutes = this.shadowRoot.querySelector('#minutes').textContent
+      const seconds = this.shadowRoot.querySelector('#seconds').textContent
       // Presents attempts on finish page.
       const counter = this.shadowRoot.querySelector('.attempts')
       const countedAttempts = this.attemptsCount
       this.attemptsCount = 0
       counter.textContent = countedAttempts
+      const timeEl = this.shadowRoot.querySelector('.time')
+      timeEl.textContent = `${minutes}:${seconds}`
       this._finishPage.classList.remove('hidden')
     }
 
@@ -376,5 +422,9 @@ customElements.define('my-memory-game',
       this._gameBoard.classList.add('hidden')
       this._finishPage.classList.add('hidden')
       this._tracker.classList.add('hidden')
+      const minutes = this.shadowRoot.querySelector('#minutes')
+      minutes.textContent = '00'
+      const seconds = this.shadowRoot.querySelector('#seconds')
+      seconds.textContent = '00'
     }
   })

@@ -83,6 +83,7 @@ template.innerHTML = `
 
     #tile-back {
       background: #cadbd6 url("${IMAGE_URL}") no-repeat center/80%;
+      transform: rotateY(0deg);
     }
 
     slot {
@@ -133,40 +134,20 @@ customElements.define('my-flipping-tile',
       this._onClick = this._onClick.bind(this)
     }
 
-    /**
-     * Attributes to monitor for changes.
-     *
-     * @returns {string[]} A string array containing attributes to monitor.
-     */
-    static get observedAttributes () {
-      return ['faceup', 'inactive', 'hidden']
-    }
+    // /**
+    //  * Attributes to monitor for changes.
+    //  *
+    //  * @returns {string[]} A string array containing attributes to monitor.
+    //  */
+    // static get observedAttributes () {
+    //   return ['faceup', 'inactive', 'hidden']
+    // }
 
     /**
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
       this._tile.addEventListener('click', this._onClick)
-    }
-
-    /**
-     * Called when observed attribute(s) changes.
-     *
-     * @param {string} name - The attribute's name.
-     * @param {*} oldValue - The old value.
-     * @param {*} newValue - The new value.
-     */
-    attributeChangedCallback (name, oldValue, newValue) {
-      if (name === 'inactive' || name === 'hidden') {
-        const attributePresent = Boolean(newValue) || newValue === ''
-
-        if (attributePresent) {
-          this._tile.setAttribute('inactive', '')
-          this.blur()
-        } else {
-          this._tile.removeAttribute('inactive')
-        }
-      }
     }
 
     /**
@@ -178,8 +159,6 @@ customElements.define('my-flipping-tile',
 
     /**
      * Handles click events.
-     *
-     * @param {MouseEvent} event The mouse event.
      */
     _onClick () {
       this._flipTile()
@@ -197,6 +176,7 @@ customElements.define('my-flipping-tile',
       } else {
         this.setAttribute('faceup', '')
       }
+
       this.dispatchEvent(new CustomEvent('flip', {
         bubbles: true,
         detail: { faceUp: this.hasAttribute('faceup') }
