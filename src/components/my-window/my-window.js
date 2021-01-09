@@ -15,7 +15,7 @@ template.innerHTML = `
   <style>
       .window-container {
         height: 70%;
-        width: 50%;
+        width: 70%;
         background-color: white;
         border-radius: 5px;
         border: 1px solid grey;

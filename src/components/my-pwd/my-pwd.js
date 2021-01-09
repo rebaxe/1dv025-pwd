@@ -125,6 +125,9 @@ customElements.define('my-pwd',
       messageApp.run()
     }
 
+    /**
+     * Opens memory game.
+     */
     _openMemoryGame () {
       const windowElement = document.createElement('my-window')
       const memoryGame = document.createElement('my-memory-game')

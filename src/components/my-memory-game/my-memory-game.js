@@ -20,6 +20,10 @@ template.innerHTML = `
     * {
       font-family: 'Roboto', sans-serif;
     }
+    .app-container {
+      height: 100%;
+      width: 100%;
+    }
     .startpage {
       height: 100%;
       width: 100%; 
@@ -82,9 +86,13 @@ template.innerHTML = `
       box-shadow: 1px 1px 1px #43635a;
     }
     .gameboard-grid {
-      padding: 20px;
+      height: 90%;
+      width: 100%;
       display: grid;
-      gap: 20px;
+      gap: 10px;
+      justify-items: center;
+      align-items: center;
+      
     }
     .small-board {
       grid-template-columns: repeat(2, 1fr);
@@ -99,6 +107,7 @@ template.innerHTML = `
       grid-template-rows: repeat(4, 1fr);
     }
     .tracker-container {
+      height: 10%;
       display: flex;
       flex-direction: row;
       justify-content: space-around;
@@ -118,32 +127,33 @@ template.innerHTML = `
       display: none;
     }
   </style>
-
-  <div class="startpage">
-    <h1>Let's play a round of Memory!</h1>
-    <p>Wake your Hippocampus and then select board size:</p>
-    <div class="button-container">
-      <button id="small">2x2</button>
-      <button id="medium">4x2</button>
-      <button id="large">4x4</button>
+  <div class="app-container">
+    <div class="startpage">
+      <h1>Let's play a round of Memory!</h1>
+      <p>Wake your Hippocampus and then select board size:</p>
+      <div class="button-container">
+        <button id="small">2x2</button>
+        <button id="medium">4x2</button>
+        <button id="large">4x4</button>
+      </div>
     </div>
-  </div>
-  <div class="finished-page-container hidden">
-    <div class="finished-page-window">
-      <h3>Congratulations!</h3>
-      <p>You made it in <span class="attempts"></span> attemps.</p>
-      <button>Try again</button>
+    <div class="finished-page-container hidden">
+      <div class="finished-page-window">
+        <h3>Congratulations!</h3>
+        <p>You made it in <span class="attempts"></span> attemps.</p>
+        <button>Try again</button>
+      </div>
     </div>
-  </div>
-  <div class="gameboard-grid hidden">
-  </div>
-  <div class="tracker-container hidden">
-    <div class="counter">
-      <h3>0 Attempts</h3>
+    <div class="gameboard-grid hidden">
     </div>
-    <!-- <div class="timer">
-      <h3>00:23</h3>
-    </div> -->
+    <div class="tracker-container hidden">
+      <div class="counter">
+        <h3>0 Attempts</h3>
+      </div>
+      <!-- <div class="timer">
+        <h3>00:23</h3>
+      </div> -->
+    </div>
   </div>
   `
 /**
@@ -211,6 +221,7 @@ customElements.define('my-memory-game',
       this._buttons.removeEventListener('click', this._createBoard)
       this._gameBoard.removeEventListener('flip', this._onFlip)
       this.removeEventListener('finished', this._onFinish)
+      this._finishPage.removeEventListener('click', this._onTryAgain)
     }
 
     /**

@@ -12,16 +12,10 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
-      height: 120px;
-      width: 120px;
-    }
-
-    :host([faceup]) #tile-front {
-      display: inline-block;
-    }
-
-    :host([faceup]) #tile-back {
-      display: none;
+      width: 80%;
+      height: 80%;
+      perspective: 1000px;
+      position: relative;
     }
 
     :host([hidden]) #tile {
@@ -32,58 +26,63 @@ template.innerHTML = `
       background: transparent;
     }
 
-    :host([hidden]) #tile > * {
+    :host([hidden]) #tile>* {
       visibility: hidden;
     }
-
-    :host([inactive]) #tile {
-      border-radius: 20px;
-      border: 1px dashed #000;
-      box-shadow: none;
-      cursor: default;
-      pointer-events: none;
-      opacity: 80%;
+    
+    :host([faceup]) #tile {
+      transform: rotateY(180deg);
     }
 
     #tile {
       display: inline-block;
       height: 100%;
       width: 100%;
-      border-radius: 20px;
+      padding: 0;
+      border: 1px solid black;
+      border-radius: 10px;
       box-shadow: 2px 2px 5px rgba(105, 105, 105, 0.664);
       background-color: rgb(240, 240, 240); 
       cursor: pointer;
       outline: none;
-      border: 1px solid black;
       transform-style: preserve-3d;
-      transition: all 0.8s ease;
-      perspective: 1000px;
-    }
-
-    #tile:active {
-      transform: rotateY(180deg);
+      transition: 0.8s;
     }
 
     #tile:focus {
       border: 2px solid black;
       box-shadow: 0px 0px 12px black;
     }
-    #tile-front {
-      display: none;
+    
+    #tile[inactive] {
+      border-radius: 20px;
+      border: 1px dashed #000;
+      box-shadow: none;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    #tile-front,
+    #tile-back {
+      display: block;
+      height: calc(100% - 8px);
+      width: calc(100% - 8px);
+      border-radius: 10px;
+      margin: 4px;
+      position: absolute; 
+      top: 0;
+      left: 0;
       backface-visibility: hidden;
     }
 
-    #tile-front, #tile-back {
-      height: calc(100% - 10px);
-      width: calc(100% - 4px);
-      border-radius: 12px;
-      margin: 1px;
+    #tile-front {
+      background-color: #fff;
+      -webkit-transform: rotateY(180deg);
+      transform: rotateY(180deg);
     }
 
     #tile-back {
       background: #cadbd6 url("${IMAGE_URL}") no-repeat center/80%;
-      display: inline-block;
-      backface-visibility: hidden;
     }
 
     slot {
@@ -103,15 +102,14 @@ template.innerHTML = `
       max-width: 95%;
       max-height: 95%;
     }
-
     </style>
 
-    <button part="main" id="tile">
+    <div part="main" id="tile">
       <div part="front" id="tile-front">
         <slot></slot>
       </div>
       <div part="back" id="tile-back"></div>
-    </button>
+    </div>
 `
 
 /**
@@ -132,6 +130,7 @@ customElements.define('my-flipping-tile',
         .appendChild(template.content.cloneNode(true))
 
       this._tile = this.shadowRoot.querySelector('#tile')
+      this._onClick = this._onClick.bind(this)
     }
 
     /**
@@ -147,7 +146,7 @@ customElements.define('my-flipping-tile',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.addEventListener('click', this._onClick)
+      this._tile.addEventListener('click', this._onClick)
     }
 
     /**
@@ -174,7 +173,7 @@ customElements.define('my-flipping-tile',
      * Called when the element is removed from the DOM.
      */
     disconnectedCallback () {
-      this.removeEventListener('click', this._onClick)
+      this._tile.removeEventListener('click', this._onClick)
     }
 
     /**
@@ -182,10 +181,8 @@ customElements.define('my-flipping-tile',
      *
      * @param {MouseEvent} event The mouse event.
      */
-    _onClick (event) {
-      if (event.button === 0 || event.keyCode === 32) {
-        this._flipTile()
-      }
+    _onClick () {
+      this._flipTile()
     }
 
     /**
