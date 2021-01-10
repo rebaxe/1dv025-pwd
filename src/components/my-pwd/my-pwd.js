@@ -26,7 +26,17 @@ template.innerHTML = `
       position: relative;
       z-index: 1;
     }
+    .hover-area {
+      width: 60vw;
+      height: 10vh;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+      border: 1px solid red;
+    }
     .dock {
+      visibility: hidden;
       background-color: rgba(75, 74, 74, 0.75);
       border: 1px solid grey;
       border-radius: 10px 10px 0px 0px;
@@ -56,6 +66,7 @@ template.innerHTML = `
     }
   </style>
   <div class="pwd-container">
+      <div class="hover-area"></div>
       <div class="dock">
           <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}">
           <input type="image" id="message-icon" src="${MESSAGE_ICON_URL}">
@@ -83,11 +94,15 @@ customElements.define('my-pwd',
         .appendChild(template.content.cloneNode(true))
 
       this.zIndexVal = 1
+      this.top = 20
+      this.left = 20
 
       this.pwd = this.shadowRoot.querySelector('.pwd-container')
       this.memoryGameIcon = this.shadowRoot.querySelector('#memory-icon')
       this.messageAppIcon = this.shadowRoot.querySelector('#message-icon')
       this.windowElement = this.querySelectorAll('my-window')
+      this.hoverArea = this.shadowRoot.querySelector('.hover-area')
+      this.dock = this.shadowRoot.querySelector('.dock')
 
       this._openMemoryGame = this._openMemoryGame.bind(this)
       this._openMessageApp = this._openMessageApp.bind(this)
@@ -104,7 +119,12 @@ customElements.define('my-pwd',
         this.zIndexVal++
         event.target.style.position = 'absolute'
         event.target.style.zIndex = this.zIndexVal
-        // event.target.parentNode.appendChild(event.target)
+      })
+      this.hoverArea.addEventListener('mouseover', () => {
+        this.dock.style.visibility = 'visible'
+      })
+      this.dock.addEventListener('mouseleave', () => {
+        this.dock.style.visibility = 'hidden'
       })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
       this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
@@ -116,7 +136,15 @@ customElements.define('my-pwd',
     disconnectedCallback () {
       this.pwd.removeEventListener('close', this._closeWindow)
       this.pwd.removeEventListener('front', (event) => {
-        event.target.parentNode.appendChild(event.target)
+        this.zIndexVal++
+        event.target.style.position = 'absolute'
+        event.target.style.zIndex = this.zIndexVal
+      })
+      this.hoverArea.removeEventListener('mouseover', () => {
+        this.dock.style.visibility = 'visible'
+      })
+      this.dock.removeEventListener('mouseleave', () => {
+        this.dock.style.visibility = 'hidden'
       })
       this.messageAppIcon.removeEventListener('click', this._openMessageApp)
       this.memoryGameIcon.removeEventListener('click', this._openMemoryGame)
@@ -143,6 +171,11 @@ customElements.define('my-pwd',
       this.pwd.appendChild(windowElement)
     }
 
+    /**
+     * Moves a window to front when clicked on.
+     *
+     * @param {event} event The event.
+     */
     _frontWindow (event) {
       this.zIndexVal++
       event.target.style.zIndex = this.zIndexVal

@@ -165,10 +165,17 @@ customElements.define('my-window',
         _moveWindow(window, event)
       }
 
-      this.addEventListener('mousemove', _onMouseMove)
-      this.addEventListener('mouseup', () => {
-        this.removeEventListener('mousemove', _onMouseMove)
-      })
+      document.addEventListener('mousemove', _onMouseMove)
+      /**
+       * Removes event listener on mouse up - stops moving of window.
+       */
+      event.target.onmouseup = function () {
+        document.removeEventListener('mousemove', _onMouseMove)
+        // event.target.onmouseup = null
+      }
+      document.onmouseout = function () {
+        document.removeEventListener('mousemove', _onMouseMove)
+      }
     }
 
     /**
