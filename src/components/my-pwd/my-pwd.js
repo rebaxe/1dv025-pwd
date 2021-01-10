@@ -23,6 +23,8 @@ template.innerHTML = `
       background-size: cover;
       overflow: hidden;
       margin: 0;
+      position: relative;
+      z-index: 1;
     }
     .dock {
       background-color: rgba(75, 74, 74, 0.75);
@@ -80,6 +82,8 @@ customElements.define('my-pwd',
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
 
+      this.zIndexVal = 1
+
       this.pwd = this.shadowRoot.querySelector('.pwd-container')
       this.memoryGameIcon = this.shadowRoot.querySelector('#memory-icon')
       this.messageAppIcon = this.shadowRoot.querySelector('#message-icon')
@@ -87,6 +91,7 @@ customElements.define('my-pwd',
 
       this._openMemoryGame = this._openMemoryGame.bind(this)
       this._openMessageApp = this._openMessageApp.bind(this)
+      this._frontWindow = this._frontWindow.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
     }
 
@@ -96,7 +101,10 @@ customElements.define('my-pwd',
     connectedCallback () {
       this.pwd.addEventListener('close', this._closeWindow)
       this.pwd.addEventListener('front', (event) => {
-        event.target.parentNode.appendChild(event.target)
+        this.zIndexVal++
+        event.target.style.position = 'absolute'
+        event.target.style.zIndex = this.zIndexVal
+        // event.target.parentNode.appendChild(event.target)
       })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
       this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
@@ -133,6 +141,11 @@ customElements.define('my-pwd',
       const memoryGame = document.createElement('my-memory-game')
       windowElement.appendChild(memoryGame)
       this.pwd.appendChild(windowElement)
+    }
+
+    _frontWindow (event) {
+      this.zIndexVal++
+      event.target.style.zIndex = this.zIndexVal
     }
 
     /**

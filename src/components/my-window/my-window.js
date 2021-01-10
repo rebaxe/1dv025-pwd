@@ -14,54 +14,50 @@ const template = document.createElement('template')
 template.innerHTML = `
   <style>
       .window-container {
-        height: 70%;
-        width: 70%;
+        height: 600px;
+        width: 600px;
         background-color: white;
         border-radius: 5px;
         border: 1px solid grey;
-        position: absolute;
-        top: 20px;
-        left: 20px;
         box-shadow: 0 0 10px #333;
+        position: absolute;
       }
       .top-bar {
-          position: absolute;
-          top: 0;
-          left: 0;
-          /* z-index: 9;*/  
-          width: 100%;
-          height: 24px;
-          background-color: grey;
-          display: flex;
-          align-items: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 24px;
+        background-color: grey;
+        display: flex;
+        align-items: center;
       }
       .top-bar:hover {
         cursor: move;
       }
       #close-btn {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          border: none;
-          margin: 3px 5px;
-          background: no-repeat center url(${CLOSE_SYMBOL_URL});
-          background-size: 8px;
-          background-color: #26695D;
-          padding: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: none;
+        margin: 3px 5px;
+        background: no-repeat center url(${CLOSE_SYMBOL_URL});
+        background-size: 8px;
+        background-color: #26695D;
+        padding: 3px;
       }
       #close-btn:hover {
-          background-color: #A8534B;
-          cursor: pointer;
+        background-color: #A8534B;
+        cursor: pointer;
       }
-
       #close-btn:focus {
-          outline: none;
-          background-color: #A8534B;
+        outline: none;
+        background-color: #A8534B;
       }
-      .mouse-down {
+      /*.mouse-down {
         position: absolute; 
         z-index: 1000;
-      }
+      }*/
 
       .window-content {
         width: 100%;
@@ -102,8 +98,8 @@ customElements.define('my-window',
       this.closeBtn = this.shadowRoot.querySelector('#close-btn')
 
       this._onMouseDown = this._onMouseDown.bind(this)
-      this.closeWindow = this.closeWindow.bind(this)
-      this.frontWindow = this.frontWindow.bind(this)
+      this._closeWindow = this._closeWindow.bind(this)
+      this._frontWindow = this._frontWindow.bind(this)
     }
 
     /**
@@ -112,8 +108,8 @@ customElements.define('my-window',
     connectedCallback () {
       this.windowEl.addEventListener('dragstart', this._onDragStart)
       this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
-      this.closeBtn.addEventListener('click', this.closeWindow)
-      this.addEventListener('click', this.frontWindow)
+      this.closeBtn.addEventListener('click', this._closeWindow)
+      this.addEventListener('click', this._frontWindow)
     }
 
     /**
@@ -122,8 +118,8 @@ customElements.define('my-window',
     disconnectedCallback () {
       this.windowEl.removeEventListener('dragstart', this._onDragStart)
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
-      this.closeBtn.removeEventListener('click', this.closeWindow)
-      this.removeEventListener('click', this.frontWindow)
+      this.closeBtn.removeEventListener('click', this._closeWindow)
+      this.removeEventListener('click', this._frontWindow)
     }
 
     /**
@@ -133,11 +129,10 @@ customElements.define('my-window',
      */
     _onMouseDown (event) {
       if (event.target === this.closeBtn) {
-        this.closeWindow()
+        this._closeWindow()
       }
-      this.frontWindow()
+      this._frontWindow()
       const window = this.windowEl
-      // window.classList.add('mouse-down')
       const distanceToPointerX = event.clientX - event.target.getBoundingClientRect().left
       const distanceToPointerY = event.clientY - event.target.getBoundingClientRect().top
       _moveWindow(window, event)
@@ -188,7 +183,7 @@ customElements.define('my-window',
     /**
      * Called when the user clicks the close button.
      */
-    closeWindow () {
+    _closeWindow () {
       this.dispatchEvent(new CustomEvent('close', {
         bubbles: true
       }))
@@ -197,7 +192,7 @@ customElements.define('my-window',
     /**
      * Called when the user clicks a window.
      */
-    frontWindow () {
+    _frontWindow () {
       this.dispatchEvent(new CustomEvent('front', {
         bubbles: true
       }))

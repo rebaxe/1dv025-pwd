@@ -264,6 +264,9 @@ customElements.define('my-message-app',
     connectedCallback () {
       this.messageForm.addEventListener('submit', this._sendMessage)
       this.darkModeBtn.addEventListener('click', this._toggleDarkMode)
+      this.messageInput.addEventListener('click', () => {
+        this.focus()
+      })
     }
 
     /**
