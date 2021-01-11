@@ -137,7 +137,7 @@ template.innerHTML = `
     <div class="finished-page-container hidden">
       <div class="finished-page-window">
         <h3>Congratulations!</h3>
-        <p>You made it in <span class="attempts"></span> attemps in <span class="time"></span>.</p>
+        <p>You made it in <span class="attempts"></span> attemps and <span class="time"></span>.</p>
         <button>Try again</button>
       </div>
     </div>
@@ -183,6 +183,7 @@ customElements.define('my-memory-game',
       this._gameBoard = this.shadowRoot.querySelector('.gameboard-grid')
       this._tracker = this.shadowRoot.querySelector('.tracker-container')
       this._finishPage = this.shadowRoot.querySelector('.finished-page-container')
+      this._tryAgainBtn = this.shadowRoot.querySelector('.finished-page-window > button')
 
       this._createBoard = this._createBoard.bind(this)
       this._onFlip = this._onFlip.bind(this)
@@ -212,7 +213,7 @@ customElements.define('my-memory-game',
       this._buttons.addEventListener('click', this._createBoard)
       this._gameBoard.addEventListener('flip', this._onFlip)
       this.addEventListener('finished', this._onFinish)
-      this._finishPage.addEventListener('click', this._onTryAgain)
+      this._tryAgainBtn.addEventListener('click', this._onTryAgain)
     }
 
     /**
@@ -222,7 +223,7 @@ customElements.define('my-memory-game',
       this._buttons.removeEventListener('click', this._createBoard)
       this._gameBoard.removeEventListener('flip', this._onFlip)
       this.removeEventListener('finished', this._onFinish)
-      this._finishPage.removeEventListener('click', this._onTryAgain)
+      this._tryAgainBtn.removeEventListener('click', this._onTryAgain)
     }
 
     /**
