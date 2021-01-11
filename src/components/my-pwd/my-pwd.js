@@ -106,12 +106,14 @@ customElements.define('my-pwd',
       this.pwd = this.shadowRoot.querySelector('.pwd-container')
       this.memoryGameIcon = this.shadowRoot.querySelector('#memory-icon')
       this.messageAppIcon = this.shadowRoot.querySelector('#message-icon')
+      this.todoAppIcon = this.shadowRoot.querySelector('#todo-icon')
       this.windowElement = this.querySelectorAll('my-window')
       this.hoverArea = this.shadowRoot.querySelector('.hover-area')
       this.dock = this.shadowRoot.querySelector('.dock')
 
       this._openMemoryGame = this._openMemoryGame.bind(this)
       this._openMessageApp = this._openMessageApp.bind(this)
+      this._openTodoApp = this._openTodoApp.bind(this)
       this._frontWindow = this._frontWindow.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
       // this._digitalClock = this._digitalClock.bind(this)
@@ -138,6 +140,7 @@ customElements.define('my-pwd',
       })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
       this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
+      this.todoAppIcon.addEventListener('click', this._openTodoApp)
     }
 
     /**
@@ -158,6 +161,7 @@ customElements.define('my-pwd',
       })
       this.messageAppIcon.removeEventListener('click', this._openMessageApp)
       this.memoryGameIcon.removeEventListener('click', this._openMemoryGame)
+      this.todoAppIcon.removeEventListener('click', this._openTodoApp)
     }
 
     // _digitalClock () {
@@ -176,7 +180,6 @@ customElements.define('my-pwd',
      */
     _openMessageApp () {
       const windowElement = document.createElement('my-window')
-      
       // Open new window above other window.
       this.zIndexVal++
       windowElement.style.position = 'absolute'
@@ -202,6 +205,20 @@ customElements.define('my-pwd',
       windowElement.style.zIndex = this.zIndexVal
       const memoryGame = document.createElement('my-memory-game')
       windowElement.appendChild(memoryGame)
+      this.pwd.appendChild(windowElement)
+    }
+
+    /**
+     * Opens To-Do app.
+     */
+    _openTodoApp () {
+      const windowElement = document.createElement('my-window')
+      // Open new window above other window.
+      this.zIndexVal++
+      windowElement.style.position = 'absolute'
+      windowElement.style.zIndex = this.zIndexVal
+      const todoApp = document.createElement('my-todo-app')
+      windowElement.appendChild(todoApp)
       this.pwd.appendChild(windowElement)
     }
 

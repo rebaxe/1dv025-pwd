@@ -1,4 +1,3 @@
-/* eslint-disable eol-last */
 /**
  * The my-message-app web component module.
  *
