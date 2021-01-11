@@ -23,6 +23,10 @@ template.innerHTML = `
     .app-container {
       height: 100%;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .startpage {
       height: 100%;
@@ -82,29 +86,32 @@ template.innerHTML = `
       background-color: #99bdb2;        
       box-shadow: 1px 1px 1px #43635a;
     }
+    :host {
+      --tile-measures: 100px;
+    }
     .gameboard-grid {
-      height: 90%;
-      width: 100%;
       display: grid;
       gap: 10px;
       justify-items: center;
       align-items: center;
-      
     }
     .small-board {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-template-columns: repeat(2, var(--tile-measures));
+      grid-template-rows: repeat(2, var(--tile-measures));
     }
     .medium-board {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-template-columns: repeat(4, var(--tile-measures));
+      grid-template-rows: repeat(2, var(--tile-measures));
     }
     .large-board {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
+      grid-template-columns: repeat(4, var(--tile-measures));
+      grid-template-rows: repeat(4, var(--tile-measures));
     }
     .tracker-container {
       height: 10%;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
       display: flex;
       flex-direction: row;
       justify-content: space-around;
@@ -112,6 +119,7 @@ template.innerHTML = `
       background-color: #99bdb2;
       border-radius: 5px;
       box-shadow: 1px 1px 1px #43635a;
+
     }
     .counter {
       padding: 5px;
