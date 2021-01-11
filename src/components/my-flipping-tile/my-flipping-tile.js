@@ -134,15 +134,6 @@ customElements.define('my-flipping-tile',
       this._onClick = this._onClick.bind(this)
     }
 
-    // /**
-    //  * Attributes to monitor for changes.
-    //  *
-    //  * @returns {string[]} A string array containing attributes to monitor.
-    //  */
-    // static get observedAttributes () {
-    //   return ['faceup', 'inactive', 'hidden']
-    // }
-
     /**
      * Called after the element is inserted into the DOM.
      */

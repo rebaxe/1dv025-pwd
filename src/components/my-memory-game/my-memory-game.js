@@ -23,6 +23,7 @@ template.innerHTML = `
     .app-container {
       height: 100%;
       width: 100%;
+      background-image: linear-gradient(to right bottom, #26695c, #3e766a, #538378, #689187, #7c9e96, #7ea39f, #81a7a8, #85abb1, #7ea5b8, #829dbc, #9093ba, #a287af);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -56,6 +57,7 @@ template.innerHTML = `
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
     }
     .button-container {
       display: flex; 
