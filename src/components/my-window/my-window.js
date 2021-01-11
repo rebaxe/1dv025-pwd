@@ -54,11 +54,6 @@ template.innerHTML = `
         outline: none;
         background-color: #A8534B;
       }
-      /*.mouse-down {
-        position: absolute; 
-        z-index: 1000;
-      }*/
-
       .window-content {
         width: 100%;
         height: calc(100% - 24px);
@@ -151,9 +146,17 @@ customElements.define('my-window',
         if (window.offsetTop <= 0) {
           window.style.top = 0
         }
-        // Window can't be moves outside (left border)
+        // Window can't be moves outside (left border).
         if (window.offsetLeft <= 0) {
           window.style.left = 0
+        }
+        // Window can't be moved outside (bottom level).
+        if (window.offsetTop + window.offsetHeight > document.body.offsetHeight) {
+          window.style.top = `${document.body.offsetHeight - window.offsetHeight}px`
+        }
+        // Window can't be moves outside (right border).
+        if (window.offsetLeft + window.offsetWidth > document.body.offsetWidth) {
+          window.style.left = `${document.body.offsetWidth - window.offsetWidth}px`
         }
       }
       /**
@@ -171,8 +174,16 @@ customElements.define('my-window',
        */
       event.target.onmouseup = function () {
         document.removeEventListener('mousemove', _onMouseMove)
-        // event.target.onmouseup = null
       }
+      /**
+       * Removes event listener on mouse up while above the window container - stops moving of window.
+       */
+      event.target.parentElement.onmouseup = function () {
+        document.removeEventListener('mousemove', _onMouseMove)
+      }
+      /**
+       * Stops moving of element if cursor is moved out of document.
+       */
       document.onmouseout = function () {
         document.removeEventListener('mousemove', _onMouseMove)
       }

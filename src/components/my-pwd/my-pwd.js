@@ -33,17 +33,15 @@ template.innerHTML = `
       bottom: 0;
       left: 50%;
       transform: translate(-50%, 0);
-      border: 1px solid red;
     }
     .dock {
-      visibility: hidden;
       background-color: rgba(75, 74, 74, 0.75);
       border: 1px solid grey;
       border-radius: 10px 10px 0px 0px;
       width: 60vw;
       height: 10vh;
       position: absolute;
-      bottom: 0;
+      bottom: -8%;
       left: 50%;
       transform: translate(-50%, 0);
       display: flex;
@@ -64,8 +62,16 @@ template.innerHTML = `
       outline: none;
       transform: scale(1.25, 1.25);
     }
+    .clock {
+      font-size: 80px;
+      color: red;
+      position: absolute;
+      top: 50px;
+      right: 50px;
+    }
   </style>
   <div class="pwd-container">
+      <div class="clock"><span></span></div>
       <div class="hover-area"></div>
       <div class="dock">
           <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}">
@@ -108,6 +114,7 @@ customElements.define('my-pwd',
       this._openMessageApp = this._openMessageApp.bind(this)
       this._frontWindow = this._frontWindow.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
+      // this._digitalClock = this._digitalClock.bind(this)
     }
 
     /**
@@ -115,16 +122,19 @@ customElements.define('my-pwd',
      */
     connectedCallback () {
       this.pwd.addEventListener('close', this._closeWindow)
+      // Moves window to front on click.
       this.pwd.addEventListener('front', (event) => {
         this.zIndexVal++
         event.target.style.position = 'absolute'
         event.target.style.zIndex = this.zIndexVal
       })
+      // Shows the dock.
       this.hoverArea.addEventListener('mouseover', () => {
-        this.dock.style.visibility = 'visible'
+        this.dock.style.bottom = 0
       })
+      // Hides the dock.
       this.dock.addEventListener('mouseleave', () => {
-        this.dock.style.visibility = 'hidden'
+        this.dock.style.bottom = '-8%'
       })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
       this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
@@ -141,14 +151,25 @@ customElements.define('my-pwd',
         event.target.style.zIndex = this.zIndexVal
       })
       this.hoverArea.removeEventListener('mouseover', () => {
-        this.dock.style.visibility = 'visible'
+        this.dock.style.bottom = 0
       })
       this.dock.removeEventListener('mouseleave', () => {
-        this.dock.style.visibility = 'hidden'
+        this.dock.style.bottom = '-8%'
       })
       this.messageAppIcon.removeEventListener('click', this._openMessageApp)
       this.memoryGameIcon.removeEventListener('click', this._openMemoryGame)
     }
+
+    // _digitalClock () {
+    //   const time = setInterval(showTime(), 6000)
+    //   function showTime () {
+    //     const currentDate = new Date()
+    //     const hour = currentDate.getHours()
+    //     const minute = currentDate.getMinutes()
+    //     return `${hour}:${minute}`
+    //   }
+    //   this.shadowRoot.querySelector('.clock > span').textContent = time
+    // }
 
     /**
      * Opens and starts the message sub app.
