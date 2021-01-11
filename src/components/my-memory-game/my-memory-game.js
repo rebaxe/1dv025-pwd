@@ -119,12 +119,10 @@ template.innerHTML = `
       background-color: #99bdb2;
       border-radius: 5px;
       box-shadow: 1px 1px 1px #43635a;
-
     }
     .counter {
       padding: 5px;
     }
-
     .timer {
       padding: 5px;
     }

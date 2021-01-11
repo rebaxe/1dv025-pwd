@@ -176,6 +176,15 @@ customElements.define('my-pwd',
      */
     _openMessageApp () {
       const windowElement = document.createElement('my-window')
+      
+      // Open new window above other window.
+      this.zIndexVal++
+      windowElement.style.position = 'absolute'
+      windowElement.style.zIndex = this.zIndexVal
+      // windowElement.style.top = `${this.top}px`
+      // windowElement.style.left = `${this.left}px`
+      // this.top += 10
+      // this.left += 10
       const messageApp = document.createElement('my-message-app')
       windowElement.appendChild(messageApp)
       this.pwd.appendChild(windowElement)
@@ -187,6 +196,10 @@ customElements.define('my-pwd',
      */
     _openMemoryGame () {
       const windowElement = document.createElement('my-window')
+      // Open new window above other window.
+      this.zIndexVal++
+      windowElement.style.position = 'absolute'
+      windowElement.style.zIndex = this.zIndexVal
       const memoryGame = document.createElement('my-memory-game')
       windowElement.appendChild(memoryGame)
       this.pwd.appendChild(windowElement)
