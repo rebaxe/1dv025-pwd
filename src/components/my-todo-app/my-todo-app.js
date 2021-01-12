@@ -5,6 +5,8 @@
  * @version 1.0.0
  */
 
+const DELETE_ICON_URL = (new URL(`./images/close-symbol.png`, import.meta.url)).href
+
 /**
  * Define template.
  */
@@ -12,6 +14,7 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Raleway&display=swap');
+
     * {
         font-family: 'Raleway', sans-serif;
         box-sizing: border-box;
@@ -40,6 +43,7 @@ template.innerHTML = `
     }
     li {
         list-style: none;
+        margin: 7px 0px;
     }
     .add-task-container {
         width: 85%;
@@ -48,9 +52,22 @@ template.innerHTML = `
         justify-content: space-evenly;
         align-items: center;
     }
+    .add-task-form {
+      width: 80%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
     .add-task {
         height: 30px;
         width: 70%;
+        outline: none;
+        transition: 0.3s ease-in-out;
+        border-radius: 4px;
+        border: 3px solid #ffe5dc;
+    }
+    .add-task:focus {
+        /*box-shadow: 0 0 10px rgba(154, 158, 255, 0.9);*/
     }
     .add-task-btn {
         text-transform: uppercase;
@@ -58,6 +75,7 @@ template.innerHTML = `
         padding: 3px 10px;
         height: 30px;
         border-radius: 5px;
+        margin: 0px 10px;
     }
     .add-btn {
         font-size: 30px;
@@ -73,19 +91,101 @@ template.innerHTML = `
         border: 1px solid #ffe5dc;
         color: #ffe5dc;
     }
+    .add-btn:hover, .add-task-btn:hover {
+        background-color: #ffe5dc;
+        border: 1px solid #e98e7f;
+        color: #e98e7f;
+    }
+    .task {
+        display: block;
+        position: relative;
+        font-size: 18px;
+        padding-left: 30px;
+    }
+
+    .task input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        weight: 0;
+    }
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #ffe5dc;
+        border: 1px solid #e98e7f;
+        cursor: pointer;
+    }
+    .checkmark:hover {
+      background-color: rgba(233,142,127,0.6);
+    }
+    .task input:checked ~ .checkmark {
+        background-color: #e98e7f;
+    }
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    .task input:checked ~ .checkmark:after {
+        display: block;
+    }
+    .task .checkmark:after {
+        left: 5px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+    .delete-btn {
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      right: 20px;
+      background: #e98e7f url("${DELETE_ICON_URL}") no-repeat center/80%;
+      border: 1px solid #e98e7f;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #AE5A4E;
+    }
+
+    .not-visible {
+      visibility: hidden;
+    }
+
+    .hidden {
+      display: none;
+    }
 </style>
+<template id="task-list-item">
+    <li>
+      <label class="task"><span class="task-text"></span><input type="checkbox"><span class="checkmark"></span><button class="delete-btn"></button></label>
+      
+    </li>
+</template>
 <div class="todo-app-container">
-    <h1>To Do</h1>
-    <div class="tasks-container">
-        <ul>
-            <li><input type="checkbox">Water plants</li>
-        </ul>
-    </div>
-    <form class="add-task-container">
-        <button class="add-btn">+</button>
-        <input type="text" class="add-task">
-        <input type="submit" class="add-task-btn" value="Add">
-</form>
+  <h1>To Do</h1>
+  <div class="tasks-container">
+    <ul>
+    </ul>
+  </div>
+  <div class="add-task-container">
+    <button class="add-btn">+</button>
+    <form class="add-task-form not-visible">
+      <input type="text" class="add-task">
+      <input type="submit" class="add-task-btn" value="Add">
+    </form>
+  </div>
 </div>
 `
 /**
@@ -106,5 +206,49 @@ customElements.define('my-todo-app',
       // append the template to the shadow root.
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
+
+      this.taskTemplate = this.shadowRoot.querySelector('#task-list-item')
+      this._addBtn = this.shadowRoot.querySelector('.add-btn')
+      this._addTaskForm = this.shadowRoot.querySelector('.add-task-form')
+      this._addTaskInput = this.shadowRoot.querySelector('.add-task')
+      this._addTaskSubmit = this.shadowRoot.querySelector('.add-task-btn')
+
+      this._showTaskInput = this._showTaskInput.bind(this)
+      this._addNewTask = this._addNewTask.bind(this)
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this._addBtn.addEventListener('click', this._showTaskInput)
+      this._addTaskForm.addEventListener('submit', this._addNewTask)
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    disconnectedCallback () {
+      this._addBtn.removeEventListener('click', this._showTaskInput)
+      this._addTaskForm.removeEventListener('submit', this._addNewTask)
+    }
+
+    _showTaskInput (event) {
+      event.preventDefault()
+      if (this._addBtn.textContent === '+') {
+        this._addBtn.textContent = '-'
+      } else {
+        this._addBtn.textContent = '+'
+      }
+      this._addTaskForm.classList.toggle('not-visible')
+    }
+
+    _addNewTask (event) {
+      event.preventDefault()
+      const newTask = this.taskTemplate.content.cloneNode(true)
+      newTask.querySelector('.task-text').textContent = this._addTaskInput.value
+      this.shadowRoot.querySelector('.tasks-container > ul').appendChild(newTask)
+      event.target.reset()
+      console.log(this._addTaskInput.value)
     }
   })
