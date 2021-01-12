@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-const DELETE_ICON_URL = (new URL(`./images/close-symbol.png`, import.meta.url)).href
+const DELETE_ICON_URL = (new URL('./images/close-symbol.png', import.meta.url)).href
 
 /**
  * Define template.
@@ -65,6 +65,7 @@ template.innerHTML = `
         transition: 0.3s ease-in-out;
         border-radius: 4px;
         border: 3px solid #ffe5dc;
+        font-size: 16px;
     }
     .add-task:focus {
         /*box-shadow: 0 0 10px rgba(154, 158, 255, 0.9);*/
@@ -90,6 +91,7 @@ template.innerHTML = `
         background-color: #e98e7f;
         border: 1px solid #ffe5dc;
         color: #ffe5dc;
+        transition: 0.3s ease-in-out;
     }
     .add-btn:hover, .add-task-btn:hover {
         background-color: #ffe5dc;
@@ -119,6 +121,7 @@ template.innerHTML = `
         background-color: #ffe5dc;
         border: 1px solid #e98e7f;
         cursor: pointer;
+        transition: 0.3s ease-in-out;
     }
     .checkmark:hover {
       background-color: rgba(233,142,127,0.6);
@@ -153,6 +156,7 @@ template.innerHTML = `
       background: #e98e7f url("${DELETE_ICON_URL}") no-repeat center/80%;
       border: 1px solid #e98e7f;
       cursor: pointer;
+      transition: 0.3s ease-in-out;
     }
 
     .delete-btn:hover {
@@ -170,7 +174,6 @@ template.innerHTML = `
 <template id="task-list-item">
     <li>
       <label class="task"><span class="task-text"></span><input type="checkbox"><span class="checkmark"></span><button class="delete-btn"></button></label>
-      
     </li>
 </template>
 <div class="todo-app-container">
@@ -207,14 +210,19 @@ customElements.define('my-todo-app',
       this.attachShadow({ mode: 'open' })
         .appendChild(template.content.cloneNode(true))
 
+      this._taskArray = []
+
       this.taskTemplate = this.shadowRoot.querySelector('#task-list-item')
       this._addBtn = this.shadowRoot.querySelector('.add-btn')
       this._addTaskForm = this.shadowRoot.querySelector('.add-task-form')
       this._addTaskInput = this.shadowRoot.querySelector('.add-task')
       this._addTaskSubmit = this.shadowRoot.querySelector('.add-task-btn')
+      this._taskList = this.shadowRoot.querySelector('.tasks-container')
 
       this._showTaskInput = this._showTaskInput.bind(this)
       this._addNewTask = this._addNewTask.bind(this)
+      this._updateTaskStatus = this._updateTaskStatus.bind(this)
+      this._deleteTask = this._deleteTask.bind(this)
     }
 
     /**
@@ -223,6 +231,8 @@ customElements.define('my-todo-app',
     connectedCallback () {
       this._addBtn.addEventListener('click', this._showTaskInput)
       this._addTaskForm.addEventListener('submit', this._addNewTask)
+      this._taskList.addEventListener('click', this._deleteTask)
+      this._taskList.addEventListener('change', this._updateTaskStatus)
     }
 
     /**
@@ -231,8 +241,15 @@ customElements.define('my-todo-app',
     disconnectedCallback () {
       this._addBtn.removeEventListener('click', this._showTaskInput)
       this._addTaskForm.removeEventListener('submit', this._addNewTask)
+      this._taskList.removeEventListener('click', this._deleteTask)
+      this._taskList.removeEventListener('change', this._updateTaskStatus)
     }
 
+    /**
+     * Toggles visibility of task input fields.
+     *
+     * @param {event} event Represents a click event.
+     */
     _showTaskInput (event) {
       event.preventDefault()
       if (this._addBtn.textContent === '+') {
@@ -243,12 +260,58 @@ customElements.define('my-todo-app',
       this._addTaskForm.classList.toggle('not-visible')
     }
 
+    /**
+     * Adds a new task to the task list.
+     *
+     * @param {event} event Represents a submit event.
+     */
     _addNewTask (event) {
       event.preventDefault()
+      const newTaskObject = {
+        text: `${this._addTaskInput.value}`,
+        checked: false
+      }
+      this._taskArray.push(newTaskObject)
+      console.log(this._taskArray)
       const newTask = this.taskTemplate.content.cloneNode(true)
       newTask.querySelector('.task-text').textContent = this._addTaskInput.value
       this.shadowRoot.querySelector('.tasks-container > ul').appendChild(newTask)
       event.target.reset()
-      console.log(this._addTaskInput.value)
+    }
+
+    /**
+     * Updates status of task.
+     *
+     * @param {event} event Represents a change event.
+     */
+    _updateTaskStatus (event) {
+      this._taskArray.forEach(task => {
+        if (task.text === event.target.parentElement.querySelector('.task-text').textContent) {
+          if (!task.checked) {
+            task.checked = true
+          } else {
+            task.checked = false
+          }
+        }
+        console.log(this._taskArray)
+      })
+    }
+
+    /**
+     * Delets a task from the task list.
+     *
+     * @param {event} event Represents a click event.
+     */
+    _deleteTask (event) {
+      if (event.target.classList.contains('delete-btn')) {
+        this._taskArray.forEach(task => {
+          if (task.text === event.target.parentElement.querySelector('.task-text').textContent) {
+            console.log(task)
+            this._taskArray.splice(task, 1)
+            console.log(this._taskArray)
+          }
+        })
+        event.target.parentElement.parentElement.remove()
+      }
     }
   })

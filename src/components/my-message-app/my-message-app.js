@@ -280,7 +280,6 @@ customElements.define('my-message-app',
      * Runs the chat application.
      */
     run () {
-      // const username = localStorage.getItem('username')
       if (localStorage.getItem('username')) {
         this.name = localStorage.getItem('username')
         this.startPage.classList.add('hidden')
