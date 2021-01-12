@@ -272,6 +272,7 @@ customElements.define('my-todo-app',
         checked: false
       }
       this._taskArray.push(newTaskObject)
+      localStorage.setItem('todo', JSON.stringify(this._taskArray))
       console.log(this._taskArray)
       const newTask = this.taskTemplate.content.cloneNode(true)
       newTask.querySelector('.task-text').textContent = this._addTaskInput.value
@@ -292,6 +293,7 @@ customElements.define('my-todo-app',
           } else {
             task.checked = false
           }
+          localStorage.setItem('todo', JSON.stringify(this._taskArray))
         }
         console.log(this._taskArray)
       })
@@ -306,9 +308,8 @@ customElements.define('my-todo-app',
       if (event.target.classList.contains('delete-btn')) {
         this._taskArray.forEach(task => {
           if (task.text === event.target.parentElement.querySelector('.task-text').textContent) {
-            console.log(task)
             this._taskArray.splice(task, 1)
-            console.log(this._taskArray)
+            localStorage.setItem('todo', JSON.stringify(this._taskArray))
           }
         })
         event.target.parentElement.parentElement.remove()
