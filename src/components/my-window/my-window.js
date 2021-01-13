@@ -127,6 +127,11 @@ customElements.define('my-window',
       this.removeEventListener('click', this._frontWindow)
     }
 
+    /**
+     * Inserts app name in top bar.
+     *
+     * @param {string} name A string representing an app name.
+     */
     insertAppName (name) {
       const nameContainer = this.windowTopBar.querySelector('.app-name > span')
       nameContainer.textContent = name

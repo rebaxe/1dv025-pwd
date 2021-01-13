@@ -373,6 +373,7 @@ customElements.define('my-todo-app',
     _deleteTask (event) {
       if (event.target.classList.contains('delete-btn')) {
         for (const task in this._taskArray) {
+          // Delete matching object in array, remove from list and update local storage.
           if (this._taskArray[task].text === event.target.parentElement.querySelector('.task-text').textContent) {
             this._taskArray.splice(task, 1)
             event.target.parentElement.parentElement.remove()
