@@ -191,6 +191,7 @@ customElements.define('my-pwd',
       const messageApp = document.createElement('my-message-app')
       windowElement.appendChild(messageApp)
       this.pwd.appendChild(windowElement)
+      // Run the application.
       messageApp.run()
     }
 
@@ -220,6 +221,8 @@ customElements.define('my-pwd',
       const todoApp = document.createElement('my-todo-app')
       windowElement.appendChild(todoApp)
       this.pwd.appendChild(windowElement)
+      // Run the application.
+      todoApp.run()
     }
 
     /**

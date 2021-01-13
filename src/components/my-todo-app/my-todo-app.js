@@ -6,6 +6,7 @@
  */
 
 const DELETE_ICON_URL = (new URL('./images/close-symbol.png', import.meta.url)).href
+const LIST_IMG_URL = (new URL('./images/todo-img.png', import.meta.url)).href
 
 /**
  * Define template.
@@ -34,9 +35,29 @@ template.innerHTML = `
         color: #ffe5dc;
         text-align: center;
     }
+    .empty-list {
+        background-color: #ffe5dc;
+        width: 85%;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .empty-list > img {
+      width: 20%;
+      height: auto;
+      margin: 10px;
+    }
+    .empty-list > h2 {
+      font-family: 'Abril Fatface', cursive;
+      margin: 10px;
+    }
     .tasks-container {
         background-color: #ffe5dc;
         width: 85%;
+        max-height: 100%;
         overflow: scroll;
         border-radius: 5px;
         align-self: start;
@@ -178,6 +199,11 @@ template.innerHTML = `
 </template>
 <div class="todo-app-container">
   <h1>To Do</h1>
+  <div class="empty-list hidden">
+    <img src="${LIST_IMG_URL}" alt="A to-do list.">
+    <h2>Nothing to do!</h2>
+    <p>Go ahead and add tasks to your list below.</p>
+  </div>
   <div class="tasks-container">
     <ul>
     </ul>
@@ -218,7 +244,10 @@ customElements.define('my-todo-app',
       this._addTaskInput = this.shadowRoot.querySelector('.add-task')
       this._addTaskSubmit = this.shadowRoot.querySelector('.add-task-btn')
       this._taskList = this.shadowRoot.querySelector('.tasks-container')
+      this._ulElement = this.shadowRoot.querySelector('.tasks-container > ul')
+      this._emptyList = this.shadowRoot.querySelector('.empty-list')
 
+      this.run = this.run.bind(this)
       this._showTaskInput = this._showTaskInput.bind(this)
       this._addNewTask = this._addNewTask.bind(this)
       this._updateTaskStatus = this._updateTaskStatus.bind(this)
@@ -246,6 +275,34 @@ customElements.define('my-todo-app',
     }
 
     /**
+     * Starts the application.
+     */
+    run () {
+      if (localStorage.getItem('todo')) {
+        // Add saved task to task array.
+        this._taskArray = JSON.parse(localStorage.getItem('todo'))
+        // Check if there where any saved tasks - if so add tasks and their status to list.
+        if (this._taskArray.length > 0) {
+          this._taskArray.forEach(task => {
+            const newTask = this.taskTemplate.content.cloneNode(true)
+            newTask.querySelector('.task-text').textContent = task.text
+            if (task.checked === true) {
+              newTask.querySelector('input[type="checkbox"]').setAttribute('checked', 'checked')
+            }
+            this._ulElement.appendChild(newTask)
+          })
+          // If no saved tasks - show "empty list".
+        } else {
+          this._taskList.classList.add('hidden')
+          this._emptyList.classList.remove('hidden')
+        }
+      } else {
+        this._taskList.classList.add('hidden')
+        this._emptyList.classList.remove('hidden')
+      }
+    }
+
+    /**
      * Toggles visibility of task input fields.
      *
      * @param {event} event Represents a click event.
@@ -267,16 +324,24 @@ customElements.define('my-todo-app',
      */
     _addNewTask (event) {
       event.preventDefault()
+      // Create object with new task and add to array.
       const newTaskObject = {
         text: `${this._addTaskInput.value}`,
         checked: false
       }
       this._taskArray.push(newTaskObject)
+      // Add task to local storage.
       localStorage.setItem('todo', JSON.stringify(this._taskArray))
-      console.log(this._taskArray)
       const newTask = this.taskTemplate.content.cloneNode(true)
+      // Add task to list.
       newTask.querySelector('.task-text').textContent = this._addTaskInput.value
-      this.shadowRoot.querySelector('.tasks-container > ul').appendChild(newTask)
+      this._ulElement.appendChild(newTask)
+      // Toggle visibility of list if hidden.
+      if (this._taskList.classList.contains('hidden')) {
+        this._taskList.classList.remove('hidden')
+        this._emptyList.classList.add('hidden')
+      }
+      // Empty input field.
       event.target.reset()
     }
 
@@ -295,7 +360,6 @@ customElements.define('my-todo-app',
           }
           localStorage.setItem('todo', JSON.stringify(this._taskArray))
         }
-        console.log(this._taskArray)
       })
     }
 
@@ -308,11 +372,19 @@ customElements.define('my-todo-app',
       if (event.target.classList.contains('delete-btn')) {
         this._taskArray.forEach(task => {
           if (task.text === event.target.parentElement.querySelector('.task-text').textContent) {
+            // Remove from array.
             this._taskArray.splice(task, 1)
+            // Update local storage.
             localStorage.setItem('todo', JSON.stringify(this._taskArray))
           }
         })
+        // Remove from list.
         event.target.parentElement.parentElement.remove()
+        // Show empty list if there are no tasks in the list.
+        if (this._ulElement.children.length === 0) {
+          this._taskList.classList.add('hidden')
+          this._emptyList.classList.remove('hidden')
+        }
       }
     }
   })
