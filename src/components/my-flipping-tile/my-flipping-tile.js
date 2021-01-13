@@ -50,7 +50,7 @@ template.innerHTML = `
     }
 
     #tile:focus {
-      border: 3px solid black;
+      border: 2px solid black;
       box-shadow: 0px 0px 12px black;
     }
     
@@ -105,7 +105,7 @@ template.innerHTML = `
     }
     </style>
 
-    <div part="main" id="tile">
+    <div part="main" id="tile" tabindex="0">
       <div part="front" id="tile-front">
         <slot></slot>
       </div>
@@ -139,6 +139,7 @@ customElements.define('my-flipping-tile',
      */
     connectedCallback () {
       this._tile.addEventListener('click', this._onClick)
+      this._tile.addEventListener('keypress', this._onClick)
     }
 
     /**
@@ -146,13 +147,18 @@ customElements.define('my-flipping-tile',
      */
     disconnectedCallback () {
       this._tile.removeEventListener('click', this._onClick)
+      this._tile.removeEventListener('keypress', this._onClick)
     }
 
     /**
-     * Handles click events.
+     * Handles click and keyboard events.
+     *
+     * @param {event} event Represens a click event (mouse or keyboard).
      */
-    _onClick () {
-      this._flipTile()
+    _onClick (event) {
+      if (event.button === 0 || event.keyCode === 32 || event.keyCode === 13) {
+        this._flipTile()
+      }
     }
 
     /**
