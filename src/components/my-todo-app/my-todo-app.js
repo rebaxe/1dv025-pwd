@@ -372,16 +372,13 @@ customElements.define('my-todo-app',
      */
     _deleteTask (event) {
       if (event.target.classList.contains('delete-btn')) {
-        this._taskArray.forEach(task => {
-          if (task.text === event.target.parentElement.querySelector('.task-text').textContent) {
-            // Remove from array.
+        for (const task in this._taskArray) {
+          if (this._taskArray[task].text === event.target.parentElement.querySelector('.task-text').textContent) {
             this._taskArray.splice(task, 1)
-            // Update local storage.
+            event.target.parentElement.parentElement.remove()
             localStorage.setItem('todo', JSON.stringify(this._taskArray))
           }
-        })
-        // Remove from list.
-        event.target.parentElement.parentElement.remove()
+        }
         // Show empty list if there are no tasks in the list.
         if (this._ulElement.children.length === 0) {
           this._taskList.classList.add('hidden')
