@@ -13,6 +13,8 @@ const CLOSE_SYMBOL_URL = (new URL('./images/close-symbol.png', import.meta.url))
 const template = document.createElement('template')
 template.innerHTML = `
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
       .window-container {
         height: 600px;
         width: 600px;
@@ -31,9 +33,15 @@ template.innerHTML = `
         background-color: grey;
         display: flex;
         align-items: center;
+        color: #333;
+        font-family: 'Roboto', sans-serif;
       }
       .top-bar:hover {
         cursor: move;
+      }
+      .top-bar > span {
+        padding: 0px 10px;
+
       }
       #close-btn {
         width: 8px;
@@ -63,6 +71,7 @@ template.innerHTML = `
   <div class="window-container">
     <div class="top-bar">
       <div id="close-btn"></div>
+      <div class="app-name"><span>App name goes here</span></div>
     </div>
     <div class="window-content">
     <slot></slot>
@@ -92,6 +101,7 @@ customElements.define('my-window',
       this.windowTopBar = this.shadowRoot.querySelector('.top-bar')
       this.closeBtn = this.shadowRoot.querySelector('#close-btn')
 
+      this.insertAppName = this.insertAppName.bind(this)
       this._onMouseDown = this._onMouseDown.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
       this._frontWindow = this._frontWindow.bind(this)
@@ -115,6 +125,11 @@ customElements.define('my-window',
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
       this.closeBtn.removeEventListener('click', this._closeWindow)
       this.removeEventListener('click', this._frontWindow)
+    }
+
+    insertAppName (name) {
+      const nameContainer = this.windowTopBar.querySelector('.app-name > span')
+      nameContainer.textContent = name
     }
 
     /**

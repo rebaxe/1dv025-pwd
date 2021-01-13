@@ -114,10 +114,11 @@ template.innerHTML = `
         color: #ffe5dc;
         transition: 0.3s ease-in-out;
     }
-    .add-btn:hover, .add-task-btn:hover {
+    .add-btn:hover, .add-task-btn:hover, .add-btn:focus, .add-task-btn:focus {
         background-color: #ffe5dc;
         border: 1px solid #e98e7f;
         color: #e98e7f;
+        outline: none;
     }
     .task {
         display: block;
@@ -144,7 +145,7 @@ template.innerHTML = `
         cursor: pointer;
         transition: 0.3s ease-in-out;
     }
-    .checkmark:hover {
+    .checkmark:hover, .checkmark:focus {
       background-color: rgba(233,142,127,0.6);
     }
     .task input:checked ~ .checkmark {
@@ -180,8 +181,9 @@ template.innerHTML = `
       transition: 0.3s ease-in-out;
     }
 
-    .delete-btn:hover {
+    .delete-btn:hover, .delete-btn:focus {
       background-color: #AE5A4E;
+      outline: none;
     }
 
     .not-visible {
@@ -211,7 +213,7 @@ template.innerHTML = `
   <div class="add-task-container">
     <button class="add-btn">+</button>
     <form class="add-task-form not-visible">
-      <input type="text" class="add-task">
+      <input type="text" class="add-task" required autocomplete="off">
       <input type="submit" class="add-task-btn" value="Add">
     </form>
   </div>

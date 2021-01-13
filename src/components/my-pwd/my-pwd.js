@@ -138,6 +138,9 @@ customElements.define('my-pwd',
       this.dock.addEventListener('mouseleave', () => {
         this.dock.style.bottom = '-8%'
       })
+      this.dock.addEventListener('focusleave', () => {
+        this.dock.style.bottom = '-8%'
+      })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
       this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
       this.todoAppIcon.addEventListener('click', this._openTodoApp)
@@ -189,6 +192,7 @@ customElements.define('my-pwd',
       // this.top += 10
       // this.left += 10
       const messageApp = document.createElement('my-message-app')
+      windowElement.insertAppName('The Chat')
       windowElement.appendChild(messageApp)
       this.pwd.appendChild(windowElement)
       // Run the application.
@@ -205,6 +209,7 @@ customElements.define('my-pwd',
       windowElement.style.position = 'absolute'
       windowElement.style.zIndex = this.zIndexVal
       const memoryGame = document.createElement('my-memory-game')
+      windowElement.insertAppName('Memory Game')
       windowElement.appendChild(memoryGame)
       this.pwd.appendChild(windowElement)
     }
@@ -219,6 +224,7 @@ customElements.define('my-pwd',
       windowElement.style.position = 'absolute'
       windowElement.style.zIndex = this.zIndexVal
       const todoApp = document.createElement('my-todo-app')
+      windowElement.insertAppName('To-Do List')
       windowElement.appendChild(todoApp)
       this.pwd.appendChild(windowElement)
       // Run the application.
