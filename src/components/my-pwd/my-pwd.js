@@ -41,7 +41,7 @@ template.innerHTML = `
       width: 60vw;
       height: 10vh;
       position: absolute;
-      bottom: -8%;
+      bottom: 0;
       left: 50%;
       transform: translate(-50%, 0);
       display: flex;
@@ -49,6 +49,7 @@ template.innerHTML = `
       justify-content: center;
       align-items: center;
     }
+
     input[type="image"] {
       height: 80%;
       transition: 0.5s ease-in-out;
@@ -64,7 +65,7 @@ template.innerHTML = `
     }
     .clock {
       font-size: 80px;
-      color: red;
+      color: #7b2c34;
       position: absolute;
       top: 50px;
       right: 50px;
@@ -116,7 +117,6 @@ customElements.define('my-pwd',
       this._openTodoApp = this._openTodoApp.bind(this)
       this._frontWindow = this._frontWindow.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
-      // this._digitalClock = this._digitalClock.bind(this)
     }
 
     /**
@@ -129,17 +129,6 @@ customElements.define('my-pwd',
         this.zIndexVal++
         event.target.style.position = 'absolute'
         event.target.style.zIndex = this.zIndexVal
-      })
-      // Shows the dock.
-      this.hoverArea.addEventListener('mouseover', () => {
-        this.dock.style.bottom = 0
-      })
-      // Hides the dock.
-      this.dock.addEventListener('mouseleave', () => {
-        this.dock.style.bottom = '-8%'
-      })
-      this.dock.addEventListener('focusleave', () => {
-        this.dock.style.bottom = '-8%'
       })
       this.messageAppIcon.addEventListener('click', this._openMessageApp)
       this.memoryGameIcon.addEventListener('click', this._openMemoryGame)
@@ -156,26 +145,20 @@ customElements.define('my-pwd',
         event.target.style.position = 'absolute'
         event.target.style.zIndex = this.zIndexVal
       })
-      this.hoverArea.removeEventListener('mouseover', () => {
-        this.dock.style.bottom = 0
-      })
-      this.dock.removeEventListener('mouseleave', () => {
-        this.dock.style.bottom = '-8%'
-      })
       this.messageAppIcon.removeEventListener('click', this._openMessageApp)
       this.memoryGameIcon.removeEventListener('click', this._openMemoryGame)
       this.todoAppIcon.removeEventListener('click', this._openTodoApp)
     }
 
-    // _digitalClock () {
-    //   const time = setInterval(showTime(), 6000)
-    //   function showTime () {
+    // runDigitalClock () {
+    //   const clockContainer = this.shadowRoot.querySelector('.clock > span')
+    //   setInterval(showTime(clockContainer), 1000)
+    //   function showTime (clock) {
     //     const currentDate = new Date()
     //     const hour = currentDate.getHours()
     //     const minute = currentDate.getMinutes()
-    //     return `${hour}:${minute}`
+    //     clock.textContent = `${hour}:${minute}`
     //   }
-    //   this.shadowRoot.querySelector('.clock > span').textContent = time
     // }
 
     /**
@@ -187,11 +170,8 @@ customElements.define('my-pwd',
       this.zIndexVal++
       windowElement.style.position = 'absolute'
       windowElement.style.zIndex = this.zIndexVal
-      // windowElement.style.top = `${this.top}px`
-      // windowElement.style.left = `${this.left}px`
-      // this.top += 10
-      // this.left += 10
       const messageApp = document.createElement('my-message-app')
+      // Add app name to window top bar.
       windowElement.insertAppName('The Chat')
       windowElement.appendChild(messageApp)
       this.pwd.appendChild(windowElement)
@@ -209,6 +189,7 @@ customElements.define('my-pwd',
       windowElement.style.position = 'absolute'
       windowElement.style.zIndex = this.zIndexVal
       const memoryGame = document.createElement('my-memory-game')
+      // Add app name to window top bar.
       windowElement.insertAppName('Memory Game')
       windowElement.appendChild(memoryGame)
       this.pwd.appendChild(windowElement)
@@ -224,6 +205,7 @@ customElements.define('my-pwd',
       windowElement.style.position = 'absolute'
       windowElement.style.zIndex = this.zIndexVal
       const todoApp = document.createElement('my-todo-app')
+      // Add app name to window top bar.
       windowElement.insertAppName('To-Do List')
       windowElement.appendChild(todoApp)
       this.pwd.appendChild(windowElement)

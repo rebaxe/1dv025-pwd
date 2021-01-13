@@ -50,7 +50,7 @@ template.innerHTML = `
     }
 
     #tile:focus {
-      border: 2px solid black;
+      border: 3px solid black;
       box-shadow: 0px 0px 12px black;
     }
     

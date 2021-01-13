@@ -34,6 +34,7 @@ template.innerHTML = `
         text-transform: uppercase;
         color: #ffe5dc;
         text-align: center;
+        font-size: 3rem;
     }
     .empty-list {
         background-color: #ffe5dc;
@@ -196,7 +197,7 @@ template.innerHTML = `
 </style>
 <template id="task-list-item">
     <li>
-      <label class="task"><span class="task-text"></span><input type="checkbox"><span class="checkmark"></span><button class="delete-btn"></button></label>
+      <label class="task"><span class="task-text"></span><input type="checkbox"><span class="checkmark" tabindex="0"></span><button class="delete-btn"></button></label>
     </li>
 </template>
 <div class="todo-app-container">
@@ -204,7 +205,7 @@ template.innerHTML = `
   <div class="empty-list hidden">
     <img src="${LIST_IMG_URL}" alt="A to-do list.">
     <h2>Nothing to do!</h2>
-    <p>Go ahead and add tasks to your list below.</p>
+    <p>Go ahead and add some tasks to your list.</p>
   </div>
   <div class="tasks-container">
     <ul>
