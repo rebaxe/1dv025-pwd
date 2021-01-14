@@ -16,6 +16,7 @@ const TODO_ICON_URL = (new URL('./images/todo-icon.png', import.meta.url)).href
 const template = document.createElement('template')
 template.innerHTML = `
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
     .pwd-container {
       height: 100vh;
       width: 100vw;
@@ -57,10 +58,10 @@ template.innerHTML = `
     .clock {
       position: absolute;
       top: 50px;
-      right: 80px;
-      height: 50px;
-      width: 80px;
-      z-index: 1000;
+      right: 50px;
+      font-family: 'Fjalla One', sans-serif;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.7);
     }
   </style>
   <div class="pwd-container">
@@ -146,6 +147,9 @@ customElements.define('my-pwd',
       this.todoAppIcon.removeEventListener('click', this._openTodoApp)
     }
 
+    /**
+     * Adds a clock.
+     */
     _addClock () {
       const clock = document.createElement('my-digital-clock')
       this._clockContainer.appendChild(clock)

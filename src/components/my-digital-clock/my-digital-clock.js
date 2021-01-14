@@ -11,13 +11,26 @@
 const template = document.createElement('template')
 template.innerHTML = `
   <style>
-    .clock-container {
+    :host(span){
+      font-family: sans-serif;
       font-size: 60px;
-      color: #7b2c34;
+      color: white;
+    }
+    span {
+      padding: 20px;
+    }
+    .clock-container {
+      width: 100%;
+      background-color: rgba(150, 150, 150, 0.7);
+      border: 1px solid grey;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   </style>
   <div class="clock-container">
-    <span></span>
+    <span>00:00</span>
   </div>
 `
 /**
@@ -57,20 +70,26 @@ customElements.define('my-digital-clock',
      * Starts the application.
      */
     run () {
-      
       this.clock = setInterval(this._showTime, 1000)
     }
 
     /**
      * Shows the time.
-     *
-     * @param {Element} clockElement The clock element.
      */
     _showTime () {
       const clockElement = this.shadowRoot.querySelector('.clock-container > span')
       const currentDate = new Date()
       const hour = currentDate.getHours()
       const minute = currentDate.getMinutes()
-      clockElement.textContent = `${hour}:${minute}`
+      console.log(minute)
+      if (minute < 10) {
+        clockElement.textContent = `${hour}:0${minute}`
+      } else if (minute < 10 && hour < 10) {
+        clockElement.textContent = `0${hour}:0${minute}`
+      } else if (hour < 10) {
+        clockElement.textContent = `0${hour}:${minute}`
+      } else {
+        clockElement.textContent = `${hour}:${minute}`
+      }
     }
   })
