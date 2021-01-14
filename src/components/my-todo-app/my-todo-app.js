@@ -1,5 +1,5 @@
 /**
- * The my-message-app web component module.
+ * The my-todo-app web component module.
  *
  * @author Rebecca Axelsson <ra223ai@student.lnu.se>
  * @version 1.0.0
@@ -88,9 +88,6 @@ template.innerHTML = `
         border-radius: 4px;
         border: 3px solid #ffe5dc;
         font-size: 16px;
-    }
-    .add-task:focus {
-        /*box-shadow: 0 0 10px rgba(154, 158, 255, 0.9);*/
     }
     .add-task-btn {
         text-transform: uppercase;
