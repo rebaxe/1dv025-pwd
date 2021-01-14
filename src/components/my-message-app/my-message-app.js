@@ -189,13 +189,12 @@ template.innerHTML = `
     .dark-btn {
       background-color: #333 !important;
       color: white !important;
-      border: 2px solid #333 !important;
+      border: 2px solid #000 !important;
     }
     .dark-btn:hover {
       background-color: #000 !important;
       border: 2px solid white !important;
     }
-
     .hidden {
       display: none;
     }
@@ -302,6 +301,7 @@ customElements.define('my-message-app',
      * Runs the chat application.
      */
     run () {
+      // Check if user already has a username set.
       if (localStorage.getItem('username')) {
         this.name = localStorage.getItem('username')
         this.startPage.classList.add('hidden')
@@ -320,6 +320,7 @@ customElements.define('my-message-app',
      * Establish WebSocket connection.
      */
     _connectWebSocket () {
+      // Establish new WS connection.
       const socket = new WebSocket('wss://cscloud6-127.lnu.se/socket/')
       this.socket = socket
       /**
@@ -336,7 +337,7 @@ customElements.define('my-message-app',
         this._onClosedConnection()
       }
       /**
-       * Listens for closing of the connection.
+       * Listens for messages.
        *
        * @param {Event} event The event.
        */
@@ -348,7 +349,7 @@ customElements.define('my-message-app',
         messageBubble.querySelector('.name').textContent = `${message.username} says:`
         messageBubble.querySelector('.message').textContent = message.data
         this.messageDisplayUl.appendChild(messageBubble)
-        // Move scroll to latest message.
+        // Scroll to latest message.
         const lastMessage = this.messageDisplayUl.lastElementChild
         lastMessage.scrollIntoView()
       }
@@ -380,6 +381,7 @@ customElements.define('my-message-app',
         channel: '',
         key: 'eDBE76deU7L0H9mEBgxUKVR0VCnq0XBd'
       }
+      // Convert to JSON and send message.
       const jsonMessage = JSON.stringify(messageToSend)
       this.socket.send(jsonMessage)
       // Clears the input text field.
@@ -396,8 +398,13 @@ customElements.define('my-message-app',
       this.darkModeBtn.classList.toggle('dark-btn')
       this.sendBtn.classList.toggle('dark-btn')
       this.messageDisplay.classList.toggle('dark-content')
+      this.reconnectBtn.classList.toggle('dark-btn')
+      this.closedNotification.classList.toggle('dark-content')
     }
 
+    /**
+     * Notifies the user of a closed connection and disables input fields.
+     */
     _onClosedConnection () {
       this.messageDisplayUl.classList.add('hidden')
       this.closedNotification.classList.remove('hidden')
@@ -405,8 +412,12 @@ customElements.define('my-message-app',
       this.sendBtn.setAttribute('disabled', '')
     }
 
+    /**
+     * Called when user clicks 'reconnect' - restarts the application.
+     */
     _onReconnect () {
       this.closedNotification.classList.add('hidden')
+      // Removes old messages.
       while (this.messageDisplayUl.hasChildNodes()) {
         this.messageDisplayUl.removeChild(this.messageDisplayUl.firstChild)
       }
