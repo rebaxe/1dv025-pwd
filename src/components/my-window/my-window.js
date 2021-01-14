@@ -24,6 +24,10 @@ template.innerHTML = `
         box-shadow: 0 0 10px #333;
         position: absolute;
       }
+      .window-container:focus {
+        box-shadow: 0 0 15px lightgrey;
+        outline: none;
+      }
       .top-bar {
         position: absolute;
         top: 0;
@@ -68,9 +72,9 @@ template.innerHTML = `
         margin-top: 24px;
       }
   </style>
-  <div class="window-container">
+  <div class="window-container" tabindex="0">
     <div class="top-bar">
-      <div id="close-btn"></div>
+      <div id="close-btn" tabindex="0"></div>
       <div class="app-name"><span>App name goes here</span></div>
     </div>
     <div class="window-content">
@@ -114,6 +118,12 @@ customElements.define('my-window',
       this.windowEl.addEventListener('dragstart', this._onDragStart)
       this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
       this.closeBtn.addEventListener('click', this._closeWindow)
+      this.closeBtn.addEventListener('keypress', this._closeWindow)
+      this.windowEl.addEventListener('keypress', (event) => {
+        if (event.keyCode === 13) {
+          this._frontWindow(event)
+        }
+      })
       this.addEventListener('click', this._frontWindow)
     }
 
@@ -124,6 +134,12 @@ customElements.define('my-window',
       this.windowEl.removeEventListener('dragstart', this._onDragStart)
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
       this.closeBtn.removeEventListener('click', this._closeWindow)
+      this.closeBtn.removeEventListener('keypress', this._closeWindow)
+      this.windowEl.addEventListener('keypress', (event) => {
+        if (event.keyCode === 13) {
+          this._frontWindow(event)
+        }
+      })
       this.removeEventListener('click', this._frontWindow)
     }
 
