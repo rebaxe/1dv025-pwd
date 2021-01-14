@@ -204,6 +204,13 @@ customElements.define('my-pwd',
       this.zIndexVal++
       windowElement.style.position = 'absolute'
       windowElement.style.zIndex = this.zIndexVal
+      console.log(windowElement)
+      const windowContainer = windowElement.shadowRoot.querySelector('.window-container')
+      console.log(windowContainer)
+      windowContainer.style.top = `${this.top}px`
+      windowContainer.style.left = `${this.left}px`
+      this.top += 5
+      this.left += 5
       const todoApp = document.createElement('my-todo-app')
       // Add app name to window top bar.
       windowElement.insertAppName('To-Do List')

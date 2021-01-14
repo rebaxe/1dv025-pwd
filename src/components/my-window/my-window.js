@@ -119,12 +119,12 @@ customElements.define('my-window',
       this.windowTopBar.addEventListener('mousedown', this._onMouseDown)
       this.closeBtn.addEventListener('click', this._closeWindow)
       this.closeBtn.addEventListener('keypress', this._closeWindow)
+      this.addEventListener('click', this._frontWindow)
       this.windowEl.addEventListener('keypress', (event) => {
         if (event.keyCode === 13) {
           this._frontWindow(event)
         }
       })
-      this.addEventListener('click', this._frontWindow)
     }
 
     /**
@@ -135,12 +135,12 @@ customElements.define('my-window',
       this.windowTopBar.removeEventListener('mousedown', this._onMouseDown)
       this.closeBtn.removeEventListener('click', this._closeWindow)
       this.closeBtn.removeEventListener('keypress', this._closeWindow)
+      this.removeEventListener('click', this._frontWindow)
       this.windowEl.addEventListener('keypress', (event) => {
         if (event.keyCode === 13) {
           this._frontWindow(event)
         }
       })
-      this.removeEventListener('click', this._frontWindow)
     }
 
     /**
@@ -247,6 +247,7 @@ customElements.define('my-window',
      * Called when the user clicks a window.
      */
     _frontWindow () {
+      this.windowEl.focus()
       this.dispatchEvent(new CustomEvent('front', {
         bubbles: true
       }))
