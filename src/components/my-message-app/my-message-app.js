@@ -96,14 +96,24 @@ template.innerHTML = `
         padding: 5px;
         list-style: none;
     }
-    li.name {
+    .name {
         padding: 0px;
         font-size: 0.8rem;
     }
-    li.message {
+    .message {
         border-radius: 5px;
         background-color: #38A793;
         font-size: 0.9rem;
+        padding: 5px;
+    }
+    .closed-notification {
+      height: 100%;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     .message-input {
         width: 90%;
@@ -128,7 +138,7 @@ template.innerHTML = `
     .message-input > input[type="text"]:focus {
         box-shadow: 0 0 10px rgba(106, 217, 197, 0.9);
     }
-    .message-input > input[type="submit"] {
+    .message-input > input[type="submit"], #reconnect-btn {
         background-color: #38A793;
         border: 2px solid #38A793;
         width: 20%;
@@ -137,7 +147,9 @@ template.innerHTML = `
         font-weight: bold;
         border-radius: 5px;
     }
-    .message-input > input[type="submit"]:hover, .startpage-content > form > input[type="submit"]:hover {
+    .message-input > input[type="submit"]:hover, 
+    .startpage-content > form > input[type="submit"]:hover, 
+    #reconnect-btn:hover {
         border: 2px solid #38A793;
         background-color: #26695D;
         color: #38A793;
@@ -189,10 +201,10 @@ template.innerHTML = `
     }
   </style>
   <template id="new-message">
-    <ul>
-      <li class="name"></li>
-      <li class="message"></li>
-    </ul>
+    <li>
+      <span class="name"></span>
+      <div class="message"></div>
+    </li>
   </template>
   <div class="message-app-container">
     <div class="startpage">
@@ -206,9 +218,15 @@ template.innerHTML = `
     </div>
     <h1 class="heading">The Chat</h1>
     <div class="message-display">
+      <div class="closed-notification hidden">
+        <h2>Connection lost...</h2>
+        <p>Connection was closed due to inactivy.</p>
+        <button id="reconnect-btn">Reconnect</button>
+      </div>
+      <ul></ul>
     </div>
     <form class="message-input">
-        <input type="text" id="message" placeholder="Type message here..." required autocomplete="off" autofocus>
+        <input type="text" id="message" placeholder="Type message here..." required autocomplete="off">
         <input type="submit" value="Send">
     </form>
     <div class="dark-mode-container">
@@ -247,14 +265,19 @@ customElements.define('my-message-app',
       this.messageInput = this.shadowRoot.querySelector('form.message-input > input[type="text"]')
       this.sendBtn = this.shadowRoot.querySelector('form.message-input > input[type="submit"]')
       this.messageDisplay = this.shadowRoot.querySelector('.message-display')
+      this.messageDisplayUl = this.shadowRoot.querySelector('.message-display > ul')
       this.messageTemplate = this.shadowRoot.querySelector('#new-message')
       this.darkModeBtn = this.shadowRoot.querySelector('button.switch')
+      this.closedNotification = this.shadowRoot.querySelector('.closed-notification')
+      this.reconnectBtn = this.shadowRoot.querySelector('#reconnect-btn')
 
       this.run = this.run.bind(this)
       this._connectWebSocket = this._connectWebSocket.bind(this)
       this._onOpen = this._onOpen.bind(this)
       this._sendMessage = this._sendMessage.bind(this)
       this._toggleDarkMode = this._toggleDarkMode.bind(this)
+      this._onClosedConnection = this._onClosedConnection.bind(this)
+      this._onReconnect = this._onReconnect.bind(this)
     }
 
     /**
@@ -263,9 +286,7 @@ customElements.define('my-message-app',
     connectedCallback () {
       this.messageForm.addEventListener('submit', this._sendMessage)
       this.darkModeBtn.addEventListener('click', this._toggleDarkMode)
-      this.messageInput.addEventListener('click', () => {
-        this.focus()
-      })
+      this.reconnectBtn.addEventListener('click', this._onReconnect)
     }
 
     /**
@@ -274,6 +295,7 @@ customElements.define('my-message-app',
     disconnectedCallback () {
       this.messageForm.removeEventListener('submit', this._sendMessage)
       this.darkModeBtn.removeEventListener('click', this._toggleDarkMode)
+      this.reconnectBtn.addEventListener('click', this._onReconnect)
     }
 
     /**
@@ -311,6 +333,7 @@ customElements.define('my-message-app',
        */
       this.socket.onclose = () => {
         console.log('Closed')
+        this._onClosedConnection()
       }
       /**
        * Listens for closing of the connection.
@@ -324,9 +347,9 @@ customElements.define('my-message-app',
         const messageBubble = this.messageTemplate.content.cloneNode(true)
         messageBubble.querySelector('.name').textContent = `${message.username} says:`
         messageBubble.querySelector('.message').textContent = message.data
-        this.messageDisplay.appendChild(messageBubble)
+        this.messageDisplayUl.appendChild(messageBubble)
         // Move scroll to latest message.
-        const lastMessage = this.messageDisplay.lastElementChild
+        const lastMessage = this.messageDisplayUl.lastElementChild
         lastMessage.scrollIntoView()
       }
     }
@@ -373,5 +396,23 @@ customElements.define('my-message-app',
       this.darkModeBtn.classList.toggle('dark-btn')
       this.sendBtn.classList.toggle('dark-btn')
       this.messageDisplay.classList.toggle('dark-content')
+    }
+
+    _onClosedConnection () {
+      this.messageDisplayUl.classList.add('hidden')
+      this.closedNotification.classList.remove('hidden')
+      this.messageInput.setAttribute('disabled', '')
+      this.sendBtn.setAttribute('disabled', '')
+    }
+
+    _onReconnect () {
+      this.closedNotification.classList.add('hidden')
+      while (this.messageDisplayUl.hasChildNodes()) {
+        this.messageDisplayUl.removeChild(this.messageDisplayUl.firstChild)
+      }
+      this.messageDisplayUl.classList.remove('hidden')
+      this.messageInput.removeAttribute('disabled')
+      this.sendBtn.removeAttribute('disabled')
+      this.run()
     }
   })
