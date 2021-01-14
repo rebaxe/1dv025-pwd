@@ -55,15 +55,16 @@ template.innerHTML = `
       transform: scale(1.25, 1.25);
     }
     .clock {
-      font-size: 80px;
-      color: #7b2c34;
       position: absolute;
       top: 50px;
-      right: 50px;
+      right: 80px;
+      height: 50px;
+      width: 80px;
+      z-index: 1000;
     }
   </style>
   <div class="pwd-container">
-      <div class="clock"><span></span></div>
+      <div class="clock"></div>
       <div class="dock">
           <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}">
           <input type="image" id="message-icon" src="${MESSAGE_ICON_URL}">
@@ -101,7 +102,9 @@ customElements.define('my-pwd',
       this.windowElement = this.querySelectorAll('my-window')
       this.hoverArea = this.shadowRoot.querySelector('.hover-area')
       this.dock = this.shadowRoot.querySelector('.dock')
+      this._clockContainer = this.shadowRoot.querySelector('.clock')
 
+      this._addClock = this._addClock.bind(this)
       this._openMemoryGame = this._openMemoryGame.bind(this)
       this._openMessageApp = this._openMessageApp.bind(this)
       this._openTodoApp = this._openTodoApp.bind(this)
@@ -114,6 +117,7 @@ customElements.define('my-pwd',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
+      this._addClock()
       this.pwd.addEventListener('close', this._closeWindow)
       // Moves window to front on click.
       this.pwd.addEventListener('front', (event) => {
@@ -130,6 +134,7 @@ customElements.define('my-pwd',
      * Called after the element is removed the DOM.
      */
     disconnectedCallback () {
+      this._addClock()
       this.pwd.removeEventListener('close', this._closeWindow)
       this.pwd.removeEventListener('front', (event) => {
         this.zIndexVal++
@@ -141,16 +146,11 @@ customElements.define('my-pwd',
       this.todoAppIcon.removeEventListener('click', this._openTodoApp)
     }
 
-    // runDigitalClock () {
-    //   const clockContainer = this.shadowRoot.querySelector('.clock > span')
-    //   setInterval(showTime(clockContainer), 1000)
-    //   function showTime (clock) {
-    //     const currentDate = new Date()
-    //     const hour = currentDate.getHours()
-    //     const minute = currentDate.getMinutes()
-    //     clock.textContent = `${hour}:${minute}`
-    //   }
-    // }
+    _addClock () {
+      const clock = document.createElement('my-digital-clock')
+      this._clockContainer.appendChild(clock)
+      console.log(clock)
+    }
 
     /**
      * Opens and starts the message sub app.
