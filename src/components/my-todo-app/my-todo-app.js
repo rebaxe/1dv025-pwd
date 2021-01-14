@@ -253,6 +253,7 @@ customElements.define('my-todo-app',
       this.run = this.run.bind(this)
       this._showTaskInput = this._showTaskInput.bind(this)
       this._addNewTask = this._addNewTask.bind(this)
+      this._updateOnKeypress = this._updateOnKeypress.bind(this)
       this._updateTaskStatus = this._updateTaskStatus.bind(this)
       this._deleteTask = this._deleteTask.bind(this)
     }
@@ -265,6 +266,7 @@ customElements.define('my-todo-app',
       this._addTaskForm.addEventListener('submit', this._addNewTask)
       this._taskList.addEventListener('click', this._deleteTask)
       this._taskList.addEventListener('change', this._updateTaskStatus)
+      this._taskList.addEventListener('keypress', this._updateOnKeypress)
     }
 
     /**
@@ -275,6 +277,7 @@ customElements.define('my-todo-app',
       this._addTaskForm.removeEventListener('submit', this._addNewTask)
       this._taskList.removeEventListener('click', this._deleteTask)
       this._taskList.removeEventListener('change', this._updateTaskStatus)
+      this._taskList.removeEventListener('keypress', this._updateOnKeypress)
     }
 
     /**
@@ -354,6 +357,7 @@ customElements.define('my-todo-app',
      * @param {event} event Represents a change event.
      */
     _updateTaskStatus (event) {
+      // Toggles task status and updates array and local storage.
       this._taskArray.forEach(task => {
         if (task.text === event.target.parentElement.querySelector('.task-text').textContent) {
           if (!task.checked) {
@@ -364,6 +368,27 @@ customElements.define('my-todo-app',
           localStorage.setItem('todo', JSON.stringify(this._taskArray))
         }
       })
+    }
+
+    /**
+     * Handles key press on custom checkbox.
+     *
+     * @param {KeyboardEvent} event Represents a keyboard event.
+     */
+    _updateOnKeypress (event) {
+      if (event.target.classList.contains('checkmark')) {
+        // Allow key press on space and enter.
+        if (event.keyCode === 13 || event.keyCode === 32) {
+          event.preventDefault()
+          // Toggle check attribute on checkbox.
+          if (event.target.previousSibling.hasAttribute('checked')) {
+            event.target.previousSibling.removeAttribute('checked')
+          } else {
+            event.target.previousSibling.setAttribute('checked', 'checked')
+          }
+          this._updateTaskStatus(event)
+        }
+      }
     }
 
     /**
