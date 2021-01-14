@@ -26,14 +26,6 @@ template.innerHTML = `
       position: relative;
       z-index: 1;
     }
-    .hover-area {
-      width: 60vw;
-      height: 10vh;
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 0);
-    }
     .dock {
       background-color: rgba(75, 74, 74, 0.75);
       border: 1px solid grey;
@@ -49,7 +41,6 @@ template.innerHTML = `
       justify-content: center;
       align-items: center;
     }
-
     input[type="image"] {
       height: 80%;
       transition: 0.5s ease-in-out;
@@ -73,7 +64,6 @@ template.innerHTML = `
   </style>
   <div class="pwd-container">
       <div class="clock"><span></span></div>
-      <div class="hover-area"></div>
       <div class="dock">
           <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}">
           <input type="image" id="message-icon" src="${MESSAGE_ICON_URL}">
@@ -115,6 +105,7 @@ customElements.define('my-pwd',
       this._openMemoryGame = this._openMemoryGame.bind(this)
       this._openMessageApp = this._openMessageApp.bind(this)
       this._openTodoApp = this._openTodoApp.bind(this)
+      this._openNewWindow = this._openNewWindow.bind(this)
       this._frontWindow = this._frontWindow.bind(this)
       this._closeWindow = this._closeWindow.bind(this)
     }
@@ -165,11 +156,7 @@ customElements.define('my-pwd',
      * Opens and starts the message sub app.
      */
     _openMessageApp () {
-      const windowElement = document.createElement('my-window')
-      // Open new window above other window.
-      this.zIndexVal++
-      windowElement.style.position = 'absolute'
-      windowElement.style.zIndex = this.zIndexVal
+      const windowElement = this._openNewWindow()
       const messageApp = document.createElement('my-message-app')
       // Add app name to window top bar.
       windowElement.insertAppName('The Chat')
@@ -183,11 +170,7 @@ customElements.define('my-pwd',
      * Opens memory game.
      */
     _openMemoryGame () {
-      const windowElement = document.createElement('my-window')
-      // Open new window above other window.
-      this.zIndexVal++
-      windowElement.style.position = 'absolute'
-      windowElement.style.zIndex = this.zIndexVal
+      const windowElement = this._openNewWindow()
       const memoryGame = document.createElement('my-memory-game')
       // Add app name to window top bar.
       windowElement.insertAppName('Memory Game')
@@ -199,18 +182,8 @@ customElements.define('my-pwd',
      * Opens To-Do app.
      */
     _openTodoApp () {
-      const windowElement = document.createElement('my-window')
-      // Open new window above other window.
-      this.zIndexVal++
-      windowElement.style.position = 'absolute'
-      windowElement.style.zIndex = this.zIndexVal
-      console.log(windowElement)
-      const windowContainer = windowElement.shadowRoot.querySelector('.window-container')
-      console.log(windowContainer)
-      windowContainer.style.top = `${this.top}px`
-      windowContainer.style.left = `${this.left}px`
-      this.top += 5
-      this.left += 5
+      // Create new window and to-do app.
+      const windowElement = this._openNewWindow()
       const todoApp = document.createElement('my-todo-app')
       // Add app name to window top bar.
       windowElement.insertAppName('To-Do List')
@@ -218,6 +191,26 @@ customElements.define('my-pwd',
       this.pwd.appendChild(windowElement)
       // Run the application.
       todoApp.run()
+    }
+
+    /**
+     * Creates a new emtpy window.
+     *
+     * @returns {HTMLElement} A window element.
+     */
+    _openNewWindow () {
+      const windowElement = document.createElement('my-window')
+      // Open new window above other window.
+      this.zIndexVal++
+      windowElement.style.position = 'absolute'
+      windowElement.style.zIndex = this.zIndexVal
+      // Open window 5px diagnonally from previously opened window.
+      const windowContainer = windowElement.shadowRoot.querySelector('.window-container')
+      windowContainer.style.top = `${this.top}px`
+      windowContainer.style.left = `${this.left}px`
+      this.top += 5
+      this.left += 5
+      return windowElement
     }
 
     /**
