@@ -58,10 +58,16 @@ customElements.define('my-digital-clock',
       this._showTime = this._showTime.bind(this)
     }
 
+    /**
+     * Called after the element is inserted into the DOM.
+     */
     connectedCallback () {
       this.run()
     }
 
+    /**
+     * Called after the element is removed from the DOM.
+     */
     disconnectedCallback () {
       this.run()
     }
@@ -81,10 +87,9 @@ customElements.define('my-digital-clock',
       const currentDate = new Date()
       const hour = currentDate.getHours()
       const minute = currentDate.getMinutes()
-      console.log(minute)
       if (minute < 10) {
         clockElement.textContent = `${hour}:0${minute}`
-      } else if (minute < 10 && hour < 10) {
+      } else if (hour < 10 && minute < 10) {
         clockElement.textContent = `0${hour}:0${minute}`
       } else if (hour < 10) {
         clockElement.textContent = `0${hour}:${minute}`

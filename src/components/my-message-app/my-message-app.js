@@ -333,7 +333,6 @@ customElements.define('my-message-app',
        * Listens for closing of the connection.
        */
       this.socket.onclose = () => {
-        console.log('Closed')
         this._onClosedConnection()
       }
       /**

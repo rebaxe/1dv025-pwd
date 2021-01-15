@@ -153,7 +153,6 @@ customElements.define('my-pwd',
     _addClock () {
       const clock = document.createElement('my-digital-clock')
       this._clockContainer.appendChild(clock)
-      console.log(clock)
     }
 
     /**
@@ -214,6 +213,10 @@ customElements.define('my-pwd',
       windowContainer.style.left = `${this.left}px`
       this.top += 5
       this.left += 5
+      // Reset top value.
+      if (this.top === 120) {
+        this.top = 0
+      }
       return windowElement
     }
 
