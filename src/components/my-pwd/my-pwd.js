@@ -55,7 +55,7 @@ template.innerHTML = `
       outline: none;
       transform: scale(1.25, 1.25);
     }
-    .clock {
+    ::part(clock) {
       position: absolute;
       top: 50px;
       right: 50px;
@@ -63,6 +63,7 @@ template.innerHTML = `
       font-size: 2rem;
       color: rgba(255, 255, 255, 0.7);
     }
+
   </style>
   <div class="pwd-container">
       <div class="clock"></div>

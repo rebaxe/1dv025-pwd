@@ -11,8 +11,8 @@
 const template = document.createElement('template')
 template.innerHTML = `
   <style>
-    :host(span){
-      font-family: sans-serif;
+    :host {
+      font-family: 'Arial';
       font-size: 60px;
       color: white;
     }
@@ -20,7 +20,6 @@ template.innerHTML = `
       padding: 20px;
     }
     .clock-container {
-      width: 100%;
       background-color: rgba(150, 150, 150, 0.7);
       border: 1px solid grey;
       border-radius: 10px;
@@ -29,7 +28,7 @@ template.innerHTML = `
       align-items: center;
     }
   </style>
-  <div class="clock-container">
+  <div part="clock" class="clock-container">
     <span>00:00</span>
   </div>
 `
