@@ -422,7 +422,7 @@ customElements.define('my-memory-game',
      * Called when user wants to try again.
      */
     _onTryAgain () {
-      // Returns to start page.
+      // Returns to start page and resets stop watch.
       this._startPage.classList.remove('hidden')
       this._finishPage.classList.add('hidden')
       const minutes = this.shadowRoot.querySelector('#minutes')

@@ -77,7 +77,6 @@ template.innerHTML = `
 
     #tile-front {
       background-color: #fff;
-      -webkit-transform: rotateY(180deg);
       transform: rotateY(180deg);
     }
 
