@@ -68,9 +68,9 @@ template.innerHTML = `
   <div class="pwd-container">
       <div class="clock"></div>
       <div class="dock">
-          <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}">
-          <input type="image" id="message-icon" src="${MESSAGE_ICON_URL}">
-          <input type="image" id="todo-icon" src="${TODO_ICON_URL}">
+          <input type="image" id="memory-icon" src="${MEMORY_ICON_URL}" alt="Memory Game">
+          <input type="image" id="message-icon" src="${MESSAGE_ICON_URL}" alt="The Chat">
+          <input type="image" id="todo-icon" src="${TODO_ICON_URL}" alt="Todo-list">
       </div>
   </div>
   `
