@@ -219,7 +219,6 @@ template.innerHTML = `
     <div class="message-display">
       <div class="closed-notification hidden">
         <h2>Connection lost...</h2>
-        <p>Connection was closed due to inactivy.</p>
         <button id="reconnect-btn">Reconnect</button>
       </div>
       <ul></ul>
